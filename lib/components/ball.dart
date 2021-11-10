@@ -101,7 +101,7 @@ class Ball extends PositionComponent with Hitbox, Collidable {
         velocity = Vector2(-velocity.x, velocity.y);
       }
     }
-    else if (other is Paddle) {  //rimbalza strano quando il paddle è tutto a sinistra o tutto a destra
+    else if (other is Paddle) {
       if (!lock && !strongLock && !freeze) {
         lock = true;
         previousBlock = Vector2.zero();
