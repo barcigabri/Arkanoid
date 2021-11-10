@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:arkanoid/components/ball.dart';
+import 'package:arkanoid/game_components/ball.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
@@ -8,16 +8,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
 
-class Ceiling extends PositionComponent with Hitbox, Collidable {
+class Wall extends PositionComponent with Hitbox, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   late Rect wallRect;
   late HitboxRectangle shape;
   late Vector2 p, s;
 
-  Ceiling(this.game, Vector2 pos, Vector2 siz) : super (
-      position: pos,
-      size: siz
+  Wall(this.game, Vector2 pos, Vector2 siz) : super (
+    position: pos,
+    size: siz
   ) {
     collidableType = CollidableType.passive;
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
@@ -38,9 +38,24 @@ class Ceiling extends PositionComponent with Hitbox, Collidable {
 
   void ballCollision(Ball ball, Set<Vector2> points) {
     ball.lock = false;
-    ball.velocity = Vector2(ball.velocity.x, -ball.velocity.y);
-    ball.position.y+=2;
     ball.previousBlock = Vector2.zero();
+    if(!ball.freeze) {
+      if (ball.velocity.x > 0) {
+        ball.position.x -= 2;
+      }
+      else {
+        ball.position.x += 2;
+      }
+      ball.velocity = Vector2(-ball.velocity.x, ball.velocity.y);
+    }
+    else {
+      if(position.x < game.screen.x/2) { //controllo se la parete viene prima o dopo la metà per capire se è la sx o la dx
+        ball.position.x += 1;
+      }
+      else {
+        ball.position.x -= 1;
+      }
+    }
   }
 
   void render(Canvas canvas) {

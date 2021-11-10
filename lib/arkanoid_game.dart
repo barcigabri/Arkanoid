@@ -2,29 +2,32 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:arkanoid/bonus_type.dart';
-import 'package:arkanoid/components/bonus.dart';
-import 'package:arkanoid/components/bottom_hole.dart';
-import 'package:arkanoid/components/lateral_paddle.dart';
-import 'package:arkanoid/components/life.dart';
-import 'package:arkanoid/components/paddle.dart';
-import 'package:arkanoid/components/wall.dart';
-import 'package:arkanoid/components/vr.dart';
+import 'package:arkanoid/game_components/bonus.dart';
+import 'package:arkanoid/game_components/bottom_hole.dart';
+import 'package:arkanoid/game_components/lateral_paddle.dart';
+import 'package:arkanoid/game_components/life.dart';
+import 'package:arkanoid/game_components/paddle.dart';
+import 'package:arkanoid/game_components/wall.dart';
+import 'package:arkanoid/game_components/ball.dart';
+import 'package:arkanoid/game_components/ceiling.dart';
+import 'package:arkanoid/game_components/block.dart' as b;
+import 'package:arkanoid/utilities_components/logo.dart';
+import 'package:arkanoid/utilities_components/vr.dart';
+import 'package:arkanoid/view.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
-import 'package:arkanoid/components/play_screen.dart';
-import 'package:arkanoid/components/ball.dart';
-import 'package:arkanoid/components/ceiling.dart';
-import 'package:arkanoid/components/block.dart' as b;
+
 
 class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, HorizontalDragDetector {
-  late FixedResolutionViewport view1;
+  View activeView = View.home;
   late Vector2 screen;
   bool init = false;
   late Vr vrLeft, vrRight;
   late List<Ball> balls;
   late Paddle paddle;
+  late LateralPaddle lpl,lpr;
   late Vector2 tileSize;
   late List<Vector2> levelPosition;
   late Vector2 playScreenPosition;
@@ -32,6 +35,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
   late List<b.Block> blocks;
   late List<BonusType> bonusOnScreen;
   late List<Life> livesList;
+
+  late Offset position;
   Random rnd = Random();
   BonusType activeType = BonusType.normal;
   bool isActive = false;
@@ -52,15 +57,63 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
     add(BottomHole(this));
     vrLeft = Vr(this,1);
     vrRight = Vr(this,2);
-    paddle = Paddle(this);
-    add(paddle);
-    add(LateralPaddle(this, paddle, 0));
-    add(LateralPaddle(this, paddle, 1));
 
-    startGame();
+    startHome();
+
+    //startGame();
+  }
+
+  TextPaint getPainter(double fontSize) {
+    TextPaint painter;
+    TextStyle textStyle;
+
+    painter = TextPaint(
+        config: TextPaintConfig(
+          color : (Color(0xff0000ff)),
+          fontFamily: 'iomanoid',
+          fontSize: fontSize,
+          textDirection: TextDirection.ltr,
+        )
+        .withTextAlign(TextAlign.center)
+
+    );
+
+    textStyle = const TextStyle(
+      color: Color(0xff0000ff),
+      shadows: <Shadow>[
+        Shadow(
+          blurRadius: 7,
+          color: Color(0xffff0000),
+          offset: Offset(3, 3),
+        ),
+      ],
+    );
+    /*painter.text = TextSpan(
+      text: "ARKANOID",
+      style: textStyle,
+    );*/
+    //calcola le dimensioni del nuovo testo aggiunto,
+    // così non va oltre il bordo
+    /*painter.layout();
+    position = Offset(
+      (screen.x / 2) - (painter.width / 2),
+      (screen.y /3) - (painter.height / 2), //prima era *.25
+    );*/
+
+    return painter;
+  }
+
+  void startHome() {
+    add(Logo(this));
   }
 
   void startGame() {
+    paddle = Paddle(this);
+    add(paddle);
+    lpl = LateralPaddle(this, paddle, 0);
+    add(lpl);
+    lpr = LateralPaddle(this, paddle, 1);
+    add(lpr);
     livesList = <Life>[];
     for(int i=0; i<lives; i++) {
       livesList.add(Life(this,i));
@@ -102,7 +155,12 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
     //ball.render(canvas);
     //bottom.render(canvas);
 
+
+    // painter.paint(canvas, position);
+
+
     //canvas.drawLine(Offset(0,0), Offset(417.8181818181818,392.72727272727275), a);
+
     //Per ultimo così è sopra a tutto il resto
     if(side == 1) { // L'if è necessario altrimenti la maschera vr non sarebbe simmetrica
       vrLeft.render(canvas); // render VR mask
@@ -262,8 +320,17 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
   void lostGame() {
     // Lo metto subito per il debug, ma ci sarà una schermata di game over
     removeBlocks();
+    removePaddle();
     startGame();
   }
+
+  void removePaddle() {
+    remove(paddle);
+    remove(lpl);
+    remove(lpr);
+  }
+
+
 
 }
 

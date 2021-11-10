@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:arkanoid/components/vr.dart';
+import 'package:arkanoid/utilities_components/vr.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/game.dart';

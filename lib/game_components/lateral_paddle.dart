@@ -1,5 +1,6 @@
 import 'dart:ui';
-import 'package:arkanoid/components/ball.dart';
+import 'package:arkanoid/game_components/ball.dart';
+import 'package:arkanoid/game_components/paddle.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
@@ -8,19 +9,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
 
-class Paddle extends PositionComponent with Hitbox, Collidable {
+class LateralPaddle extends PositionComponent with Hitbox, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   late Rect wallRect;
   late HitboxRectangle shape;
-  late double xPaddle;
-
-  Paddle(this.game) : super (
-      position: Vector2(game.screen.x/2,(game.screen.y-game.playScreenSize.y)/2+game.playScreenSize.y-game.tileSize.y*2),
-      size: Vector2(game.tileSize.x*2,1),
-      anchor: Anchor.center
+  final Paddle paddle;
+  final int LoR; //indica se è il confine di destra (1) o di sinistra (0)
+  LateralPaddle(this.game, this.paddle, this.LoR) : super (
+    position: Vector2(paddle.position.x/2-paddle.size.x/2+LoR*paddle.size.x-LoR*1,paddle.position.y+3),
+    size: Vector2(1,game.tileSize.y*2/3),
   ) {
-
+    //print(game.screen.x/2+LoR*paddle.size.x/2);
     collidableType = CollidableType.passive;
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
 
@@ -28,31 +28,28 @@ class Paddle extends PositionComponent with Hitbox, Collidable {
     shape = HitboxRectangle();
     addHitbox(shape);
 
-    xPaddle = game.screen.x/2;
+
   }
 
   void ballCollision(Ball ball, Set<Vector2> points) {
-    if (!ball.lock && !ball.strongLock && !ball.freeze) {
+    if (!ball.lock && !ball.strongLock) {
       ball.lock = true;
-      ball.previousBlock = Vector2.zero();
+      ball.strongLock = true;
 
-      ball.ballRotation(points.first.x);
-
+      if(ball.velocity.x>0) {
+        ball.position.x-=2;
+      }
+      else {
+        ball.position.x+=2;
+      }
+      if (ball.velocity.y < 0) ball.velocity.y = -ball.velocity.y;
+      ball.velocity = Vector2(-ball.velocity.x, ball.velocity.y);
     }
-    if(ball.freezeBonus) {
-      ball.freeze = true;
-      ball.movementOnOff(false);
-      ball.difference = game.paddle.xPaddle-ball.position.x;
-    }
-  }
-
-  void restorePosition() {
-    position = Vector2(game.screen.x/2,(game.screen.y-game.playScreenSize.y)/2+game.playScreenSize.y-game.tileSize.y*2);
   }
 
   void render(Canvas canvas) {
     Paint boxPaint = Paint();
-    boxPaint.color = Color(0xFFFFFFFF);
+    boxPaint.color = Color(0xFFFF0000);
     /*canvas.drawLine(Offset(0,0), Offset(game.screen.x,game.screen.y), boxPaint);*/
     debugColor = Colors.white;
     super.render(canvas);
@@ -70,16 +67,11 @@ class Paddle extends PositionComponent with Hitbox, Collidable {
 
   void update(double t) {
     super.update(t);
-    if(xPaddle <= game.screen.x-game.screen.x/6-size.x/2 && xPaddle >= game.screen.x/6+size.x/2) {
-      position.x = xPaddle;
-    }
-    else if(xPaddle > game.screen.x-game.screen.x/6-size.x/2) {
-      position.x = game.screen.x-game.screen.x/6-size.x/2;
-      xPaddle = position.x;
+    if(paddle.xPaddle < paddle.position.x-paddle.size.x/2 && paddle.xPaddle > paddle.position.x+paddle.size.x/2) {
+      position.x = paddle.xPaddle-paddle.size.x/2+LoR*paddle.size.x-LoR*1;
     }
     else {
-      position.x = game.screen.x/6+size.x/2;
-      xPaddle = position.x;
+      position.x = paddle.position.x-paddle.size.x/2+LoR*paddle.size.x-LoR*1;
     }
   }
 }

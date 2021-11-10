@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:arkanoid/bonus_type.dart';
-import 'package:arkanoid/components/bottom_hole.dart';
-import 'package:arkanoid/components/paddle.dart';
+import 'package:arkanoid/game_components/bottom_hole.dart';
+import 'package:arkanoid/game_components/paddle.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';

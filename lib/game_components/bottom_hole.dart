@@ -1,5 +1,5 @@
 import 'dart:ui';
-import 'package:arkanoid/components/ball.dart';
+import 'package:arkanoid/game_components/ball.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
