@@ -189,7 +189,7 @@ class Ball extends PositionComponent with Hitbox, Collidable {
     }
   }
 
-  void onTapDown(TapDownInfo info) {
+  void onTapUp(TapUpInfo info) {
     if(!freeze) game.paddle.xPaddle = info.eventPosition.game.x;
     if(freeze) { // Se la pallina è sul paddle la lancio e inizio il gioco
       freeze = false;

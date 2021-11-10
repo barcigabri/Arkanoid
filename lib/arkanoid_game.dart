@@ -11,7 +11,9 @@ import 'package:arkanoid/game_components/wall.dart';
 import 'package:arkanoid/game_components/ball.dart';
 import 'package:arkanoid/game_components/ceiling.dart';
 import 'package:arkanoid/game_components/block.dart' as b;
+import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
 import 'package:arkanoid/utilities_components/logo.dart';
+import 'package:arkanoid/utilities_components/start_button.dart';
 import 'package:arkanoid/utilities_components/vr.dart';
 import 'package:arkanoid/view.dart';
 import 'package:flame/components.dart';
@@ -20,7 +22,7 @@ import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 
 
-class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, HorizontalDragDetector {
+class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents, HasDraggableComponents {
   View activeView = View.home;
   late Vector2 screen;
   bool init = false;
@@ -35,6 +37,9 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
   late List<b.Block> blocks;
   late List<BonusType> bonusOnScreen;
   late List<Life> livesList;
+  late GestureInvisibleScreen gesturesComponent;
+  late Logo logo;
+  late StartButton startButton;
 
   late Offset position;
   Random rnd = Random();
@@ -51,6 +56,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
     tileSize = Vector2((screen.x*2/3)/13,(screen.x/3)/13);
     playScreenSize = Vector2(tileSize.x*13,tileSize.y*33);
     playScreenPosition = Vector2(screen.x/6,(screen.y-playScreenSize.y)/2);
+
     add(Wall(this,Vector2.all(0),Vector2(screen.x/6,screen.y)));
     add(Ceiling(this,Vector2.all(0),Vector2(screen.x,(screen.y-playScreenSize.y)/2)));
     add(Wall(this,Vector2(screen.x-screen.x/6, 0),Vector2(screen.x/6,screen.y)));
@@ -104,10 +110,21 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
   }
 
   void startHome() {
-    add(Logo(this));
+    logo = Logo(this);
+    add(logo);
+    startButton = StartButton(this);
+    add(startButton);
+  }
+
+  void removeHome() {
+    remove(logo);
+    remove(startButton);
+
   }
 
   void startGame() {
+    gesturesComponent = GestureInvisibleScreen(this);
+    add(gesturesComponent);
     paddle = Paddle(this);
     add(paddle);
     lpl = LateralPaddle(this, paddle, 0);
@@ -199,10 +216,10 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
 
   }
 
-  @override
+  /*@override
   void onTapDown(TapDownInfo info) {
     balls.first.onTapDown(info);
-  }
+  }*/
 
 
   @override
@@ -321,7 +338,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
     // Lo metto subito per il debug, ma ci sarà una schermata di game over
     removeBlocks();
     removePaddle();
-    startGame();
+    remove(gesturesComponent);
+    startHome();
   }
 
   void removePaddle() {
