@@ -12,9 +12,7 @@ class Block extends PositionComponent with Hitbox, Collidable {
   late Sprite bgSprite;
   //late Rect blockRect;
   late HitboxRectangle shape;
-  late Vector2 p, s;
   Vector2 idPosizione;
-  bool invalida = false;
 
   Block(this.game, Vector2 pos, this.idPosizione) : super (
       position: pos,
@@ -25,16 +23,8 @@ class Block extends PositionComponent with Hitbox, Collidable {
     // aggiungo le hitbox
     shape = HitboxRectangle();
     addHitbox(shape);
-    p=pos;
     debugColor = Color(0xFFFF0000);
-    //print('elemento creato in posizione $p');
-    /*print(s.x);
-    print(s.y);*/
-    //non capisco bene perché non funziona, secondo me è sbagliata come è formulata la fromLTWH
-    // wallRect = Rect.fromLTWH(p.x, p.y, s.x, s.y);
-    // print(wallRect);
-    //blockRect=Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y);
-    // print(wallRect);
+
 
   }
 

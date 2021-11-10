@@ -241,14 +241,12 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
   }
 
   void removeBlocks() {
-    blocks.forEach((element) {
-      remove(element);
-    });
-
+    removeAll(blocks);
   }
 
   void lostLife() {
-
+    paddle.xPaddle = screen.x/2; // Quando perde una vita rimetto il paddle al centro
+    paddle.position.x = paddle.xPaddle;
     if(livesList.isEmpty) {
       lostGame();
     }
@@ -258,12 +256,12 @@ class ArkanoidGame extends FlameGame with HasCollidables, TapDetector, Horizonta
       deactivateBonus();
       balls.add(Ball(this,true));
       add(balls.first);
-      paddle.xPaddle = screen.x/2; // Quando perde una vita rimetto il paddle al centro
     }
   }
 
   void lostGame() {
     // Lo metto subito per il debug, ma ci sarà una schermata di game over
+    removeBlocks();
     startGame();
   }
 
