@@ -69,145 +69,25 @@ class Ball extends PositionComponent with Hitbox, Collidable {
 
   @override
   void onCollision(Set<Vector2> points, Collidable other) {
-    bool lostLife = false;
-    //print(velocity);
-    //print(points);
+    // Bisogna usare tutta una serie di if in modo che other sia di una classe ben definita
     if (other is Wall) {
-      lock = false;
-      previousBlock = Vector2.zero();
-      if(velocity.x>0) {
-        position.x-=2;
-      }
-      else {
-        position.x+=2;
-      }
-      velocity = Vector2(-velocity.x, velocity.y);
-
+      other.ballCollision(this, points);
     }
     else if (other is LateralPaddle) {
-
-      if (!lock && !strongLock) {
-        lock = true;
-        strongLock = true;
-
-        if(velocity.x>0) {
-          position.x-=2;
-        }
-        else {
-          position.x+=2;
-        }
-        if (velocity.y < 0) velocity.y = -velocity.y;
-        velocity = Vector2(-velocity.x, velocity.y);
-      }
+      other.ballCollision(this, points);
     }
     else if (other is Paddle) {
-      if (!lock && !strongLock && !freeze) {
-        lock = true;
-        previousBlock = Vector2.zero();
-
-        ballRotation(points.first.x);
-
-      }
-      if(freezeBonus) {
-        freeze = true;
-        movementOnOff(false);
-        difference = game.paddle.xPaddle-position.x;
-      }
+      other.ballCollision(this, points);
     }
     else if (other is Ceiling) {
-      lock = false;
-      velocity = Vector2(velocity.x, -velocity.y);
-      position.y+=2;
-      previousBlock = Vector2.zero();
+      other.ballCollision(this, points);
     }
     else if (other is BottomHole) {
-      lock = false;
-      strongLock = false;
-      previousBlock = Vector2.zero();
-      print('Ball fell down');
-      game.balls.remove(this);
-      game.remove(this);
-      if (game.balls.isEmpty) {
-        game.lostLife();
-      }
+      other.ballCollision(this, points);
     }
     else if (other is b.Block) {
-      lock = false;
-      if (!megaBonus) { // se è attivo trapasso i blocchi
-        if (!((previousBlock.x == other.idPosizione.x + 1 && previousBlock.y == other.idPosizione.y) ||
-          (previousBlock.x == other.idPosizione.x + -1 && previousBlock.y == other.idPosizione.y) ||
-          (previousBlock.x == other.idPosizione.x && previousBlock.y + 1 == other.idPosizione.y) ||
-          (previousBlock.x == other.idPosizione.x && previousBlock.y - 1 == other.idPosizione.y))) {
-          previousBlock = other.idPosizione;
-
-          // controllo se il blocco fa parte di una parete e quindi va usato il rimbalzo laterale
-          bool hasAdjacentVtop = false;
-          bool hasAdjacentVbottom = false;
-
-
-          game.blocks.forEach((block) {
-            // print(num.parse((block.position.y + block.size.y).toStringAsFixed(2)));
-            // print(num.parse(points.last.y.toStringAsFixed(2)));
-            if (block != other) {
-              if ((num.parse((block.position.y + game.tileSize.y).toStringAsFixed(2)) == num.parse(points.last.y.toStringAsFixed(2)) ||
-                  num.parse((block.position.y + game.tileSize.y).toStringAsFixed(2)) == num.parse(points.first.y.toStringAsFixed(2))) &&
-                  (block.position.x == other.position.x)) {
-                //print('ok');
-                hasAdjacentVtop = true;
-              }
-              if ((num.parse((block.position.y).toStringAsFixed(2)) == num.parse(points.last.y.toStringAsFixed(2)) ||
-                  num.parse((block.position.y).toStringAsFixed(2)) == num.parse(points.first.y.toStringAsFixed(2))) &&
-                  (block.position.x == other.position.x)) {
-                //print('ok');
-                hasAdjacentVbottom = true;
-              }
-            }
-          });
-
-          // in tutti gli if i controlli sono doppi così controllo tutti i punti di contatto,
-          // sia del blocco che della pallina
-          if (((num.parse((other.position.y + game.tileSize.y).toStringAsFixed(2)) == num.parse(points.last.y.toStringAsFixed(2)) ||
-              num.parse((other.position.y + game.tileSize.y).toStringAsFixed(2)) == num.parse(points.first.y.toStringAsFixed(2))) &&
-              (velocity.y < 0) && !hasAdjacentVbottom) ||
-              ((num.parse((other.position.y).toStringAsFixed(2)) == num.parse(points.last.y.toStringAsFixed(2)) ||
-              num.parse((other.position.y).toStringAsFixed(2)) == num.parse(points.first.y.toStringAsFixed(2))) &&
-              (velocity.y > 0) &&
-              !hasAdjacentVtop)) { // colpisco il blocco dall'alto o dal basso
-            velocity = Vector2(velocity.x, -velocity.y);
-          }
-          else if (num.parse((other.position.x).toStringAsFixed(2)) == num.parse(points.first.x.toStringAsFixed(2)) ||
-              num.parse((other.position.x + other.size.x).toStringAsFixed(2)) == num.parse(points.first.x.toStringAsFixed(2)) ||
-              num.parse((other.position.x).toStringAsFixed(2)) == num.parse(points.last.x.toStringAsFixed(2)) ||
-              num.parse((other.position.x + other.size.x).toStringAsFixed(2)) == num.parse(points.last.x.toStringAsFixed(2))) { // colpisco il blocco dal lato destro o sinistro
-            velocity = Vector2(-velocity.x, velocity.y);
-            //print(3);
-          }
-          else { //questo else non dovrebbe mai servire, era per il debug, valutare se toglierlo
-            velocity = Vector2(velocity.x, -velocity.y);
-            //print(4);
-            //print('prova');
-          }
-          game.blocks.remove(other);
-          game.remove(other);
-          addBonus();
-        }
-      }
-      else {
-        game.blocks.remove(other);
-        game.remove(other);
-        addBonus();
-      }
+      other.ballCollision(this, points);
     }
-
-    /*@override
-    void onCollisionEnd(Collidable other) {
-      if(other is Block) {
-
-      }
-    }*/
-
-
-
   }
 
   void addBonus() {

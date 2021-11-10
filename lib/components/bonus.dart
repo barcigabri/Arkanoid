@@ -38,7 +38,7 @@ class Bonus extends SpriteComponent with Hitbox, Collidable {
 
     do { // scelgo il tipo di bonus
       type = BonusType.values.elementAt(game.rnd.nextInt(BonusType.values.length - 1));
-    } while (game.bonusOnScreen.contains(type) || type == game.activeType);
+    } while (game.bonusOnScreen.contains(type) || type == game.activeType );
     game.bonusOnScreen.add(type);
     assignSprite();
   }

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:arkanoid/components/ball.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
@@ -33,7 +34,13 @@ class Ceiling extends PositionComponent with Hitbox, Collidable {
     // print(wallRect);
     wallRect=Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y);
     // print(wallRect);
+  }
 
+  void ballCollision(Ball ball, Set<Vector2> points) {
+    ball.lock = false;
+    ball.velocity = Vector2(ball.velocity.x, -ball.velocity.y);
+    ball.position.y+=2;
+    ball.previousBlock = Vector2.zero();
   }
 
   void render(Canvas canvas) {

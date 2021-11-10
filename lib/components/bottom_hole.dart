@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:arkanoid/components/ball.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
@@ -29,8 +30,21 @@ class BottomHole extends SpriteComponent with Hitbox, Collidable {
       game.screen.y/20,
     );
     // print('bottom: $bgRectDown');
-
   }
+
+
+  void ballCollision(Ball ball, Set<Vector2> points) {
+    ball.lock = false;
+    ball.strongLock = false;
+    ball.previousBlock = Vector2.zero();
+    print('Ball fell down');
+    game.balls.remove(ball);
+    game.remove(ball);
+    if (game.balls.isEmpty) {
+      game.lostLife();
+    }
+  }
+
 
   void render(Canvas canvas) {
     //bgSprite.renderRect(c, bgRect); // stampa sfondo immagine

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:arkanoid/components/ball.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
@@ -33,7 +34,28 @@ class Wall extends PositionComponent with Hitbox, Collidable {
     // print(wallRect);
     wallRect=Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y);
     // print(wallRect);
+  }
 
+  void ballCollision(Ball ball, Set<Vector2> points) {
+    ball.lock = false;
+    ball.previousBlock = Vector2.zero();
+    if(!ball.freeze) {
+      if (ball.velocity.x > 0) {
+        ball.position.x -= 2;
+      }
+      else {
+        ball.position.x += 2;
+      }
+      ball.velocity = Vector2(-ball.velocity.x, ball.velocity.y);
+    }
+    else {
+      if(position.x < game.screen.x/2) { //controllo se la parete viene prima o dopo la metà per capire se è la sx o la dx
+        ball.position.x += 1;
+      }
+      else {
+        ball.position.x -= 1;
+      }
+    }
   }
 
   void render(Canvas canvas) {

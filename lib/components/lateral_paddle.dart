@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:arkanoid/components/ball.dart';
 import 'package:arkanoid/components/paddle.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
@@ -28,14 +29,22 @@ class LateralPaddle extends PositionComponent with Hitbox, Collidable {
     addHitbox(shape);
 
 
-    /*print(s.x);
-    print(s.y);*/
-    //non capisco bene perché non funziona, secondo me è sbagliata come è formulata la fromLTWH
-    // wallRect = Rect.fromLTWH(p.x, p.y, s.x, s.y);
-    // print(wallRect);
-    //wallRect=Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y);
-    // print(wallRect);
+  }
 
+  void ballCollision(Ball ball, Set<Vector2> points) {
+    if (!ball.lock && !ball.strongLock) {
+      ball.lock = true;
+      ball.strongLock = true;
+
+      if(ball.velocity.x>0) {
+        ball.position.x-=2;
+      }
+      else {
+        ball.position.x+=2;
+      }
+      if (ball.velocity.y < 0) ball.velocity.y = -ball.velocity.y;
+      ball.velocity = Vector2(-ball.velocity.x, ball.velocity.y);
+    }
   }
 
   void render(Canvas canvas) {

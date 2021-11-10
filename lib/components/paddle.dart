@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:arkanoid/components/ball.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
@@ -28,6 +29,21 @@ class Paddle extends PositionComponent with Hitbox, Collidable {
     addHitbox(shape);
 
     xPaddle = game.screen.x/2;
+  }
+
+  void ballCollision(Ball ball, Set<Vector2> points) {
+    if (!ball.lock && !ball.strongLock && !ball.freeze) {
+      ball.lock = true;
+      ball.previousBlock = Vector2.zero();
+
+      ball.ballRotation(points.first.x);
+
+    }
+    if(ball.freezeBonus) {
+      ball.freeze = true;
+      ball.movementOnOff(false);
+      ball.difference = game.paddle.xPaddle-ball.position.x;
+    }
   }
 
   void restorePosition() {
