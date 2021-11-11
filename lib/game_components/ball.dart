@@ -16,7 +16,7 @@ import 'package:flame/geometry.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 
-class Ball extends PositionComponent with Hitbox, Collidable {
+class Ball extends PositionComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late HitboxCircle shape;
   late Vector2 velocity;

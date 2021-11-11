@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
 
-class Bonus extends SpriteComponent with Hitbox, Collidable {
+class Bonus extends SpriteComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   double speed = 60;

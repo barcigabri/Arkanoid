@@ -60,9 +60,11 @@ packages:
   flame:
     dependency: "direct main"
     description:
-      name: flame
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "packages/flame"
+      ref: "spydon.use-text-style"
+      resolved-ref: "120a389daeed3f44e41af631a51a70ddccab718d"
+      url: "https://github.com/flame-engine/flame.git"
+    source: git
     version: "1.0.0-releasecandidate.16"
   flutter:
     dependency: "direct main"
@@ -178,5 +180,5 @@ packages:
     source: hosted
     version: "2.1.0"
 sdks:
-  dart: ">=2.12.0 <3.0.0"
+  dart: ">=2.14.0 <3.0.0"
   flutter: ">=2.5.0"

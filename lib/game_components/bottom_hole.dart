@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
 
-class BottomHole extends SpriteComponent with Hitbox, Collidable {
+class BottomHole extends SpriteComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   Rect bgRectDown = Rect.zero;

@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
 
-class Wall extends PositionComponent with Hitbox, Collidable {
+class Wall extends PositionComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   late Rect wallRect;

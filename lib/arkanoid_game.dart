@@ -69,24 +69,15 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     //startGame();
   }
 
-  TextPaint getPainter(double fontSize) {
+  TextPaint getPainter(double fSize) {
     TextPaint painter;
     TextStyle textStyle;
 
-    painter = TextPaint(
-        config: TextPaintConfig(
-          color : (Color(0xff0000ff)),
-          fontFamily: 'iomanoid',
-          fontSize: fontSize,
-          textDirection: TextDirection.ltr,
-        )
-        .withTextAlign(TextAlign.center)
-
-    );
-
-    textStyle = const TextStyle(
+    textStyle = TextStyle(
+      fontFamily: 'iomanoid',
+      fontSize: fSize,
       color: Color(0xff0000ff),
-      shadows: <Shadow>[
+      shadows: const <Shadow>[
         Shadow(
           blurRadius: 7,
           color: Color(0xffff0000),
@@ -94,17 +85,12 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
         ),
       ],
     );
-    /*painter.text = TextSpan(
-      text: "ARKANOID",
-      style: textStyle,
-    );*/
-    //calcola le dimensioni del nuovo testo aggiunto,
-    // così non va oltre il bordo
-    /*painter.layout();
-    position = Offset(
-      (screen.x / 2) - (painter.width / 2),
-      (screen.y /3) - (painter.height / 2), //prima era *.25
-    );*/
+
+    painter = TextPaint(
+        style: textStyle,
+        textDirection: TextDirection.ltr,
+
+    );
 
     return painter;
   }
