@@ -22,7 +22,8 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
 
   Bonus(this.game, Vector2 pos) : super (
       position: Vector2(pos.x + game.tileSize.x/5,pos.y),
-      size: game.tileSize*3/5
+      size: game.tileSize*3/5,
+      anchor:Anchor.center,
   ) {
     double moltiplicatore = speed / 353.53846153846155;
     speed = game.playScreenSize.y * moltiplicatore;
@@ -82,11 +83,8 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
 
     super.render(canvas);
     renderHitboxes(canvas);
-
     //canvas.drawRect(wallRect, boxPaint);
-
     //bgSprite.renderRect(c, bgRect); // stampa sfondo immagine
-
   }
 
   void update (double dt){
@@ -113,9 +111,9 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
         letter ='m';
         break;
     }
-    // Capire perché non mostra la sprite della F e della R
     sprite = Sprite(Flame.images.fromCache("powerUp/$letter.png"));
     //print("powerUp/$letter.png");
+
   }
 
 

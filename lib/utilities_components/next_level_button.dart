@@ -5,12 +5,11 @@ import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 
-class StartButton extends TextComponent with Tappable {
+class NextLevelButton extends TextComponent with Tappable {
   final ArkanoidGame game;
 
-
-  StartButton(this.game) : super (
-    "start",
+  NextLevelButton(this.game) : super (
+    "next",
     position: Vector2(game.screen.x/2,game.screen.y*2/3),
     //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
     textRenderer: game.getPainter(40),
@@ -21,15 +20,16 @@ class StartButton extends TextComponent with Tappable {
   @override
   bool onTapDown(TapDownInfo event) {
     textRenderer = game.getPainter(50);
-
     return true;
   }
 
   @override
   bool onTapUp(TapUpInfo event) {
+    game.lockOnTapUp = true;
     textRenderer = game.getPainter(40);
-    game.removeHome();
-    game.startGame();
+    game.removeLevel();
+    game.level++;
+    game.nextLevel();
     return true;
   }
 
@@ -38,5 +38,4 @@ class StartButton extends TextComponent with Tappable {
     textRenderer = game.getPainter(40);
     return true;
   }
-
 }

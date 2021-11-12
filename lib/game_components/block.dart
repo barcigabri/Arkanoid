@@ -102,15 +102,33 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
           //print(4);
           //print('prova');
         }
-        game.blocks.remove(this);
-        game.remove(this);
-        ball.addBonus();
+
+        collisionEndProcedure();
       }
     }
     else {
-      game.blocks.remove(this);
-      game.remove(this);
-      ball.addBonus();
+      collisionEndProcedure();
+    }
+
+  }
+
+  void removeBlock() {
+    game.blocks.remove(this);
+    game.remove(this);
+  }
+
+  void addBonus() {
+    game.addBonus(position + game.tileSize/2);
+  }
+
+  void collisionEndProcedure() {
+    removeBlock();
+    print(game.bonusOnScreen);
+    if(game.blocks.isEmpty) {
+      game.levelCompleted();
+    }
+    else {
+      addBonus();
     }
   }
 

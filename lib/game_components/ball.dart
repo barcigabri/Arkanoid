@@ -31,7 +31,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
   double angle;
 
 
-  final double bonusPerc = 0.15;
+
 
   double max = 0;
 
@@ -90,18 +90,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
     }
   }
 
-  void addBonus() {
-    // Calcolo per il rilascio dei bonus (15%)
-    double release;
-    release = game.rnd.nextDouble();
-    if (release <= bonusPerc) {
-      // Controllo tutta la casistica per valutare se creare un bonus
-      if (!((game.activeType == BonusType.normal && game.bonusOnScreen.length == BonusType.values.length - 1) || // bonus attivo normale e sullo schermo c'è un bonus per ogni componente (tutti tranne normale)
-          (game.activeType != BonusType.normal && game.bonusOnScreen.length == BonusType.values.length - 2))) { // bonus attivo != normale e sullo schermo c'è un bonus per ogni componente non attivo (tutti tranne normale e quello attivo)
-        game.add(Bonus(game, position));
-      }
-    }
-  }
+
 
 
 
@@ -190,10 +179,15 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
   }
 
   void onTapUp(TapUpInfo info) {
-    if(!freeze) game.paddle.xPaddle = info.eventPosition.game.x;
-    if(freeze) { // Se la pallina è sul paddle la lancio e inizio il gioco
-      freeze = false;
-      movementOnOff(true);
+    if(game.lockOnTapUp){
+      game.lockOnTapUp = false;
+    }
+    else {
+      if (!freeze) game.paddle.xPaddle = info.eventPosition.game.x;
+      if (freeze) { // Se la pallina è sul paddle la lancio e inizio il gioco
+        freeze = false;
+        movementOnOff(true);
+      }
     }
   }
 }

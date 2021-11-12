@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 
 class Logo extends TextComponent {
   final ArkanoidGame game;
-
-
   Logo(this.game) : super (
       "arkanoid",
       position: Vector2(game.screen.x/2,game.screen.y/3),
@@ -15,16 +13,5 @@ class Logo extends TextComponent {
       textRenderer: game.getPainter(70),
   ) {
     anchor = Anchor.center;
-  }
-
-
-  @override
-  void render(Canvas canvas) {
-
-    super.render(canvas);
-  }
-
-  void update(double t) {
-    super.update(t);
   }
 }
