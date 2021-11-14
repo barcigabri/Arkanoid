@@ -16,6 +16,7 @@ import 'package:arkanoid/level_components/level1.dart';
 import 'package:arkanoid/level_components/level2.dart';
 import 'package:arkanoid/level_components/level3.dart';
 import 'package:arkanoid/level_components/level4.dart';
+import 'package:arkanoid/level_components/level5.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
 import 'package:arkanoid/utilities_components/next_level_button.dart';
 import 'package:arkanoid/utilities_components/start_button.dart';
@@ -85,7 +86,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    level = 3;
+    level = 4;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
@@ -95,7 +96,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
       Level1(this),
       Level2(this),
       Level3(this),
-      Level4(this)
+      Level4(this),
+      Level5(this)
     ];
 
     startHome();
