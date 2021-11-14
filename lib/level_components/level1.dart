@@ -8,10 +8,10 @@ class Level1 extends Level{
 
   @override
   void generateLevelPositions() {
-    for (double y = /*3*/9; y < 10; y++) {
-      for (double x = /*1*/11; x < 12; x++) {
+    for (double y = 3; y < 11; y++) {
+      for (double x = 1; x < 12; x++) {
         if (x == 6) x++;
-        addInPosition(x, y);
+        addInPosition(x, y, 1);
       }
     }
   }

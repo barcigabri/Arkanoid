@@ -14,6 +14,7 @@ import 'package:arkanoid/game_components/block.dart' as b;
 import 'package:arkanoid/level_components/level.dart';
 import 'package:arkanoid/level_components/level1.dart';
 import 'package:arkanoid/level_components/level2.dart';
+import 'package:arkanoid/level_components/level3.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
 import 'package:arkanoid/utilities_components/logo.dart';
 import 'package:arkanoid/utilities_components/next_level_button.dart';
@@ -35,7 +36,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late Paddle paddle;
   late LateralPaddle lpl,lpr;
   late Vector2 tileSize;
-  late List<Vector2> levelPosition;
+  late List<Vector3> levelPosition;
   late Vector2 playScreenPosition;
   late Vector2 playScreenSize;
   late List<b.Block> blocks;
@@ -84,7 +85,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // level = 1;
+    // level = 2;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
@@ -92,7 +93,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
     levels = [
       Level1(this),
-      Level2(this)
+      Level2(this),
+      Level3(this)
     ];
 
     startHome();
@@ -271,7 +273,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     if (release <= bonusPerc) {
       // Controllo tutta la casistica per valutare se creare un bonus
       if (!((activeType == BonusType.normal && bonusOnScreen.length == BonusType.values.length - 1) || // bonus attivo normale e sullo schermo c'è un bonus per ogni componente (tutti tranne normale)
-          (activeType != BonusType.normal && bonusOnScreen.length == BonusType.values.length - 2))) { // bonus attivo != normale e sullo schermo c'è un bonus per ogni componente non attivo (tutti tranne normale e quello attivo)
+          (activeType != BonusType.normal && bonusOnScreen.length == BonusType.values.length - 2) || // bonus attivo != normale e sullo schermo c'è un bonus per ogni componente non attivo (tutti tranne normale e quello attivo)
+          bonusOnScreen.length > 1)) { // Non permetto più di due bonus sullo schermo
         bonusList.add(Bonus(this, pos));
         add(bonusList.last);
       }

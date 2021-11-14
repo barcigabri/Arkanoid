@@ -20,7 +20,7 @@ abstract class Level {
 
   /// Create the level automatically
   void create() {
-    game.levelPosition = <Vector2>[];
+    game.levelPosition = <Vector3>[];
     game.blocks = <Block>[];
     game.balls = <Ball>[];
     game.paddle = Paddle(game);
@@ -38,8 +38,8 @@ abstract class Level {
   }
 
   /// internal function
-  void addInPosition(double x, double y) {
-    game.levelPosition.add(game.playScreenPosition + Vector2(game.tileSize.x * x, game.tileSize.y * y));
+  void addInPosition(double x, double y, double type) {
+    game.levelPosition.add(Vector3(game.playScreenPosition.x + game.tileSize.x * x, game.playScreenPosition.y + game.tileSize.y * y, type));
   }
 
   /// It must be called in generateLevelPositions() to work. Adds
@@ -47,7 +47,7 @@ abstract class Level {
   /// blocks list
   void addBlocks() {
     game.levelPosition.forEach((blockPosition) {
-      Block single = Block(game, blockPosition, getLogicalPosition(blockPosition.x,blockPosition.y));
+      Block single = Block(game, blockPosition.xy, getLogicalPosition(blockPosition.x,blockPosition.y), blockPosition.z.toInt());
       game.blocks.add(single);
       game.add(single);
     });

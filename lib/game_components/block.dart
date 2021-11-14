@@ -14,8 +14,9 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
   //late Rect blockRect;
   late HitboxRectangle shape;
   Vector2 idPosizione;
+  int lives;
 
-  Block(this.game, Vector2 pos, this.idPosizione) : super (
+  Block(this.game, Vector2 pos, this.idPosizione, this.lives) : super (
       position: pos,
       size: game.tileSize
   ) {
@@ -24,7 +25,7 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
     // aggiungo le hitbox
     shape = HitboxRectangle();
     addHitbox(shape);
-    debugColor = Color(0xFFFF0000);
+
   }
 
 
@@ -46,9 +47,26 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
     //print('348.2:${p.x} 0.0:${p.y} ${game.screen.x/6}:${s.x} ${game.screen.y}:${s.y}');
     //Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y)
   }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    switch(lives) {
+      case 1:
+        debugColor = Color(0xFFFF0000);
+        break;
+      case 2:
+        debugColor = Color(0xFFC0C0C0);
+        break;
+      case 3:
+        debugColor = Color(0xFFFFD700);
+        break;
+    }
+  }
+
   void ballCollision(Ball ball, Set<Vector2> points) {
     ball.lock = false;
-    if (!ball.megaBonus) { // se è attivo trapasso i blocchi
+    if (!ball.megaBonus && lives != 3) { // se è attivo trapasso i blocchi
       if (!((ball.previousBlock.x == idPosizione.x + 1 && ball.previousBlock.y == idPosizione.y) ||
           (ball.previousBlock.x == idPosizione.x + -1 && ball.previousBlock.y == idPosizione.y) ||
           (ball.previousBlock.x == idPosizione.x && ball.previousBlock.y + 1 == idPosizione.y) ||
@@ -102,8 +120,8 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
           //print(4);
           //print('prova');
         }
-
         collisionEndProcedure();
+
       }
     }
     else {
@@ -122,14 +140,22 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
   }
 
   void collisionEndProcedure() {
-    removeBlock();
-    print(game.bonusOnScreen);
-    if(game.blocks.isEmpty) {
-      game.levelCompleted();
-    }
-    else {
-      addBonus();
-    }
+   switch(lives) {
+     case 1:
+       removeBlock();
+       print(game.bonusOnScreen);
+       if (game.blocks.isEmpty) {
+         game.levelCompleted();
+       }
+       else {
+         addBonus();
+       }
+       break;
+     case 2:
+       lives--;
+       break;
+   }
+
   }
 
 }

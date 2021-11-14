@@ -13,13 +13,13 @@ class Level2 extends Level{
         case 3:
         case 17:
           for (double x = 5; x < 8; x++) {
-            addInPosition(x, y.toDouble());
+            addInPosition(x, y.toDouble(),1);
           }
           break;
         case 4:
         case 16:
           for (double x = 4; x < 9; x++) {
-            addInPosition(x, y.toDouble());
+            addInPosition(x, y.toDouble(),1);
           }
           break;
         case 5:
@@ -27,13 +27,13 @@ class Level2 extends Level{
         case 6:
         case 14:
           for (double x = 3; x < 10; x++) {
-            addInPosition(x, y.toDouble());
+            addInPosition(x, y.toDouble(),1);
           }
           break;
         case 7:
         case 13:
           for (double x = 2; x < 11; x++) {
-            addInPosition(x, y.toDouble());
+            addInPosition(x, y.toDouble(),1);
           }
           break;
         case 8:
@@ -42,7 +42,7 @@ class Level2 extends Level{
         case 11:
         case 10:
           for (double x = 1; x < 12; x++) {
-            addInPosition(x, y.toDouble());
+            addInPosition(x, y.toDouble(),1);
           }
           break;
       }
