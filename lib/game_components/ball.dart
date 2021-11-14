@@ -1,16 +1,13 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:arkanoid/arkanoid_game.dart';
-import 'package:arkanoid/bonus_type.dart';
 import 'package:arkanoid/game_components/block.dart' as b;
-import 'package:arkanoid/game_components/bonus.dart';
 import 'package:arkanoid/game_components/bottom_hole.dart';
 import 'package:arkanoid/game_components/ceiling.dart';
 import 'package:arkanoid/game_components/lateral_paddle.dart';
 import 'package:arkanoid/game_components/paddle.dart';
 import 'package:arkanoid/game_components/wall.dart';
 import 'package:flame/components.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/input.dart';

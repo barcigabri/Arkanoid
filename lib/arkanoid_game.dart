@@ -15,8 +15,8 @@ import 'package:arkanoid/level_components/level.dart';
 import 'package:arkanoid/level_components/level1.dart';
 import 'package:arkanoid/level_components/level2.dart';
 import 'package:arkanoid/level_components/level3.dart';
+import 'package:arkanoid/level_components/level4.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
-import 'package:arkanoid/utilities_components/logo.dart';
 import 'package:arkanoid/utilities_components/next_level_button.dart';
 import 'package:arkanoid/utilities_components/start_button.dart';
 import 'package:arkanoid/utilities_components/vr.dart';
@@ -85,7 +85,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // level = 2;
+    level = 3;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
@@ -94,7 +94,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     levels = [
       Level1(this),
       Level2(this),
-      Level3(this)
+      Level3(this),
+      Level4(this)
     ];
 
     startHome();
@@ -201,8 +202,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
   void multiplyBall() {
     deactivateBonus();
-    double angle = balls.first.angle; // meglio mettere degli angoli fissi
 
+    // metto degli angoli fissi
     balls.add(Ball(this, false, angle: 40));
     add(balls.last);
     balls.add(Ball(this, false, angle: 140));

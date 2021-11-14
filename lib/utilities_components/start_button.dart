@@ -1,9 +1,6 @@
-import 'dart:ui';
-
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
-import 'package:flutter/material.dart';
 
 class StartButton extends TextComponent with Tappable {
   final ArkanoidGame game;

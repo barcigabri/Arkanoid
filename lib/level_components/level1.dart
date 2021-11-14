@@ -1,6 +1,5 @@
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:arkanoid/level_components/level.dart';
-import 'package:flame/game.dart';
 
 class Level1 extends Level{
 

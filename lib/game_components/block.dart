@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:arkanoid/game_components/ball.dart';
 import 'package:flame/components.dart';
-import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +17,7 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
 
   Block(this.game, Vector2 pos, this.idPosizione, this.lives) : super (
       position: pos,
-      size: game.tileSize
+      size: game.tileSize/*-Vector2.all(1)*/ // VALUTARE SE TENERE O MENO, PER ORA TENENDO TRAPASSO I BLOCCHI, MEGLIO DI NO
   ) {
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
     collidableType = CollidableType.passive;
@@ -59,6 +58,9 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
         debugColor = Color(0xFFC0C0C0);
         break;
       case 3:
+        debugColor = Color(0xFFCD7F32);
+        break;
+      case 4:
         debugColor = Color(0xFFFFD700);
         break;
     }
@@ -66,11 +68,12 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
 
   void ballCollision(Ball ball, Set<Vector2> points) {
     ball.lock = false;
-    if (!ball.megaBonus && lives != 3) { // se è attivo trapasso i blocchi
+    if (!ball.megaBonus) { // se è attivo trapasso i blocchi
       if (!((ball.previousBlock.x == idPosizione.x + 1 && ball.previousBlock.y == idPosizione.y) ||
           (ball.previousBlock.x == idPosizione.x + -1 && ball.previousBlock.y == idPosizione.y) ||
           (ball.previousBlock.x == idPosizione.x && ball.previousBlock.y + 1 == idPosizione.y) ||
-          (ball.previousBlock.x == idPosizione.x && ball.previousBlock.y - 1 == idPosizione.y))) {
+          (ball.previousBlock.x == idPosizione.x && ball.previousBlock.y - 1 == idPosizione.y) ||
+          (ball.previousBlock.x == idPosizione.x && ball.previousBlock.y == idPosizione.y))) {
         ball.previousBlock = idPosizione;
 
         // controllo se il blocco fa parte di una parete e quindi va usato il rimbalzo laterale
@@ -142,6 +145,7 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
   void collisionEndProcedure() {
    switch(lives) {
      case 1:
+     case 3:
        removeBlock();
        print(game.bonusOnScreen);
        if (game.blocks.isEmpty) {
@@ -152,7 +156,7 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
        }
        break;
      case 2:
-       lives--;
+       lives++;
        break;
    }
 

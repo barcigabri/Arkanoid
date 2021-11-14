@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:arkanoid/arkanoid_game.dart';
-//import 'package:arkanoid/prova.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flutter/foundation.dart';

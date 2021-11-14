@@ -1,11 +1,8 @@
 import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
-import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
-
-//import 'package:arkanoid/prova.dart';
 
 class Vr {
   final ArkanoidGame game;

@@ -1,11 +1,7 @@
 import 'dart:ui';
-import 'package:arkanoid/game_components/ball.dart';
 import 'package:flame/components.dart';
 import 'package:flame/components.dart' as comp;
-import 'package:flame/flame.dart';
-import 'package:flame/geometry.dart';
 import 'package:flame/input.dart';
-import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
