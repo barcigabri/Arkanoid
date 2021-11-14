@@ -61,8 +61,8 @@ packages:
     dependency: "direct main"
     description:
       path: "packages/flame"
-      ref: "spydon.use-text-style"
-      resolved-ref: "120a389daeed3f44e41af631a51a70ddccab718d"
+      ref: main
+      resolved-ref: "69d9e5aa6b279253e2159be8449835e891140c5f"
       url: "https://github.com/flame-engine/flame.git"
     source: git
     version: "1.0.0-releasecandidate.16"

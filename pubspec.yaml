@@ -37,7 +37,7 @@ dependencies:
   flame:
     git:
       url: https://github.com/flame-engine/flame.git
-      ref: spydon.use-text-style
+      ref: main
       path: packages/flame
 dev_dependencies:
   flutter_test:
