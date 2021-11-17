@@ -29,6 +29,7 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flame_audio/audio_pool.dart';
 import 'package:flutter/material.dart';
 
 
@@ -79,13 +80,22 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   int lives = 2;
 
   late final List<Level> levels;
+  late AudioPool blockSound;
+  late AudioPool steelSound;
+  late AudioPool wallSound;
+  late AudioPool lostLifeSound;
 
   bool lockOnTapUp = false;
 
 
   @override
   Future<void> onLoad() async {
-    super.onLoad();
+    await super.onLoad();
+    blockSound = await AudioPool.create('beeep.mp3');
+    steelSound = await AudioPool.create('bing.mp3');
+    wallSound = await AudioPool.create('plop.mp3');
+    lostLifeSound = await AudioPool.create('vgdeathsound.mp3');
+
     screen=Vector2(size.x/2,size.y);
     tileSize = Vector2((screen.x*2/3)/13,(screen.x/3)/13);
     playScreenSize = Vector2(tileSize.x*13,tileSize.y*33);

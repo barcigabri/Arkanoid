@@ -149,7 +149,8 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
      case 1:
      case 3:
        removeBlock();
-       FlameAudio.audioCache.play('sfx/beeep.mp3', mode: PlayerMode.LOW_LATENCY);
+       // FlameAudio.audioCache.play('sfx/beeep.mp3', mode: PlayerMode.LOW_LATENCY);
+       game.blockSound.start();
        if (game.blocks.isEmpty) {
          game.levelCompleted();
        }
@@ -159,7 +160,8 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
        break;
      case 2:
        lives++;
-       FlameAudio.audioCache.play('sfx/bing.mp3', mode: PlayerMode.LOW_LATENCY);
+       // FlameAudio.audioCache.play('sfx/bing.mp3', mode: PlayerMode.LOW_LATENCY);
+       game.steelSound.start();
        break;
    }
 
