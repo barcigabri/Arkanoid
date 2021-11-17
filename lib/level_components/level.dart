@@ -29,7 +29,7 @@ abstract class Level {
     game.add(game.lpl);
     game.lpr = LateralPaddle(game, game.paddle, 1);
     game.add(game.lpr);
-    game.deactivateBonus();
+    game.resetBonus();
     game.paddle.restorePosition();
     game.balls.add(Ball(game, true));
     game.add(game.balls.first);

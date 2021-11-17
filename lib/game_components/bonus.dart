@@ -67,6 +67,9 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
         case BonusType.mega:
           game.megaBall();
           break;
+        case BonusType.laser:
+          game.laser();
+          break;
       }
 
     }
@@ -109,6 +112,9 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
         break;
       case BonusType.mega:
         letter ='m';
+        break;
+      case BonusType.laser:
+        letter ='l';
         break;
     }
     sprite = Sprite(Flame.images.fromCache("powerUp/$letter.png"));

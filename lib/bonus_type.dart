@@ -4,5 +4,6 @@ enum BonusType {
   disruption,
   freezing,
   mega,
+  laser,
   normal,
 }

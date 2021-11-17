@@ -1,6 +1,7 @@
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -16,12 +17,21 @@ void main() async {
   await Flame.images.loadAll(<String>[
     'vr/cardboardview.png',
     'background/spike.png',
+    'background/penalization.png',
     'powerUp/d.png',
     'powerUp/e.png',
     'powerUp/f.png',
     'powerUp/r.png',
     'powerUp/m.png',
+    'powerUp/l.png',
     'components/life.png'
+  ]);
+
+  await FlameAudio.audioCache.loadAll(<String>[
+    'sfx/beeep.mp3',
+    'sfx/plop.mp3',
+    'sfx/bing.mp3',
+    'sfx/vgdeathsound.mp3'
   ]);
 
 

@@ -1,9 +1,11 @@
 import 'dart:ui';
 import 'package:arkanoid/game_components/ball.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
@@ -34,6 +36,7 @@ class BottomHole extends SpriteComponent with HasHitboxes, Collidable {
 
 
   void ballCollision(Ball ball, Set<Vector2> points) {
+    FlameAudio.audioCache.play('sfx/vgdeathsound.mp3', mode: PlayerMode.LOW_LATENCY);
     ball.lock = false;
     ball.strongLock = false;
     ball.previousBlock = Vector2.zero();

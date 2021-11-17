@@ -176,7 +176,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
   }
 
   void onTapUp(TapUpInfo info) {
-    if(game.lockOnTapUp){
+    if(game.lockOnTapUp){ // controllo per non fare doppio onTapUp simultaneo, lo avvio in EyeButton e nextLevelButton
       game.lockOnTapUp = false;
     }
     else {

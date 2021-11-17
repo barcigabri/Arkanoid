@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:arkanoid/bonus_type.dart';
 import 'package:arkanoid/game_components/bonus.dart';
 import 'package:arkanoid/game_components/bottom_hole.dart';
+import 'package:arkanoid/game_components/laser.dart';
 import 'package:arkanoid/game_components/lateral_paddle.dart';
 import 'package:arkanoid/game_components/life.dart';
 import 'package:arkanoid/game_components/paddle.dart';
@@ -17,12 +18,15 @@ import 'package:arkanoid/level_components/level2.dart';
 import 'package:arkanoid/level_components/level3.dart';
 import 'package:arkanoid/level_components/level4.dart';
 import 'package:arkanoid/level_components/level5.dart';
+import 'package:arkanoid/utilities_components/eye_button.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
 import 'package:arkanoid/utilities_components/next_level_button.dart';
+import 'package:arkanoid/utilities_components/no_penalization_button.dart';
 import 'package:arkanoid/utilities_components/start_button.dart';
 import 'package:arkanoid/utilities_components/vr.dart';
 import 'package:arkanoid/view.dart';
 import 'package:flame/components.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
@@ -33,6 +37,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late Vector2 screen;
   bool init = false;
   late Vr vrLeft, vrRight;
+  late Wall wallLeft, wallRight;
+  late Ceiling ceiling;
   late List<Ball> balls;
   late Paddle paddle;
   late LateralPaddle lpl,lpr;
@@ -49,9 +55,19 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   //late Logo logo;
   late StartButton startButton;
   late TextComponent logo;
-  late TextBoxComponent levelComplete;
+  late TextComponent textBox;
   late NextLevelButton nextLevelButton;
   late Level currentLevel;
+  late EyeButton eyeButtonLeft, eyeButtonRight;
+  late Sprite penalizationScreen;
+  late bool penalizedEyeIsLeft;
+  late bool penalizedEyeIsSet = false;
+  late NoPenalizationButton noPenalizationButton;
+  double laserTimer = 0;
+
+
+  double penalizationPercentage = 0.5;
+  late Paint opacityPaint;
 
   late Offset position;
   int level = 0;
@@ -64,7 +80,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
   late final List<Level> levels;
 
-  bool lockOnTapUp =false;
+  bool lockOnTapUp = false;
 
 
   @override
@@ -86,7 +102,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    level = 4;
+    // level = 4;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
@@ -100,6 +116,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
       Level5(this)
     ];
 
+    opacityPaint = Paint()..color = Colors.white.withOpacity(penalizationPercentage);
+
     startHome();
 
     //startGame();
@@ -110,16 +128,16 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     TextStyle textStyle;
 
     textStyle = TextStyle(
-      fontFamily: 'iomanoid',
+      fontFamily: 'arcade',
       fontSize: fSize,
-      color: Color(0xff0000ff),
-      shadows: const <Shadow>[
+      color: Color(0xffffffff),
+      /*shadows: const <Shadow>[
         Shadow(
           blurRadius: 7,
           color: Color(0xffff0000),
           offset: Offset(2, 2),
         ),
-      ],
+      ],*/
     );
 
     painter = TextPaint(
@@ -132,11 +150,11 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   }
 
   void startHome() {
-    logo = TextComponent("arkanoid",
+    logo = TextComponent("ARKANOID",
       position: Vector2(screen.x/2,screen.y/3),
       //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
       anchor: Anchor.center,
-      textRenderer: getPainter(70));
+      textRenderer: getPainter(30));
     add(logo);
     startButton = StartButton(this);
     add(startButton);
@@ -145,7 +163,33 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   void removeHome() {
     remove(logo);
     remove(startButton);
+  }
 
+  void selectEye() {
+    textBox = TextComponent(
+      "SCEGLI\nL'OCCHIO\nAMBLIOPICO",
+      textRenderer: getPainter(25), position: Vector2(screen.x/2,screen.y/3),
+      /*boxConfig: TextBoxConfig(
+        maxWidth: playScreenSize.x*9/10,
+      ),*/
+      anchor: Anchor.center,
+    );
+    add(textBox);
+    eyeButtonLeft = EyeButton(this, true);
+    eyeButtonRight = EyeButton(this, false);
+    noPenalizationButton = NoPenalizationButton(this);
+    add(eyeButtonLeft);
+    add(eyeButtonRight);
+    add(noPenalizationButton);
+
+  }
+
+  void addPenalization(isLeft) {
+    removeEyeSelection();
+    penalizationScreen = Sprite(Flame.images.fromCache('background/penalization.png'));
+    penalizedEyeIsLeft = isLeft;
+    penalizedEyeIsSet = true;
+    startGame();
   }
 
   void startGame() {
@@ -161,16 +205,35 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     nextLevel();
   }
 
+  @override
+  void update (double dt) {
+    super.update(dt);
 
+    waitLasers(dt);
+
+  }
 
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
+    if(penalizedEyeIsSet) {
+      if (penalizedEyeIsLeft) {
+        canvas.save();
+        penalizationScreen.renderRect(canvas, Rect.fromLTWH(playScreenPosition.x,playScreenPosition.y,playScreenSize.x,playScreenSize.y), overridePaint: opacityPaint);
+        canvas.restore();
+      }
+    }
     renderBothScreens(canvas, 1);
     canvas.translate(screen.x,0); //render alla metà destra
     super.render(canvas);
-    renderBothScreens(canvas, 2);
+    if(penalizedEyeIsSet) {
+      if (!penalizedEyeIsLeft) {
+        canvas.save();
+        penalizationScreen.renderRect(canvas, Rect.fromLTWH(playScreenPosition.x,playScreenPosition.y,playScreenSize.x,playScreenSize.y), overridePaint: opacityPaint);
+        canvas.restore();
+      }
+    }    renderBothScreens(canvas, 2);
     canvas.drawLine(Offset(0,0), Offset(0,screen.y), a);
 
   }
@@ -192,6 +255,17 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
   }
 
+  void waitLasers(double dt) {
+    if(activeType == BonusType.laser) {
+      laserTimer += dt;
+      if(laserTimer >= 1) {
+        laserTimer = 0;
+        add(Laser(this, true));
+        add(Laser(this, false));
+      }
+    }
+  }
+
 
 
   @override
@@ -203,7 +277,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
 
   void multiplyBall() {
-    deactivateBonus();
+    resetBonus();
 
     // metto degli angoli fissi
     balls.add(Ball(this, false, angle: 40));
@@ -214,17 +288,17 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   }
 
   void expandPaddle() {
-    deactivateBonus();
+    resetBonus();
     paddle.size.x += tileSize.x/2;
   }
 
   void reducePaddle() {
-    deactivateBonus();
+    resetBonus();
     paddle.size.x -= tileSize.x/2;
   }
 
   void freezeBall() {
-    deactivateBonus();
+    resetBonus();
 
     deleteLowerPositionBalls();
     balls.first.freezeBonus = true;
@@ -232,10 +306,15 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   }
 
   void megaBall() {
-    deactivateBonus();
+    resetBonus();
     for(int i=0; i<balls.length; i++) {
       balls.elementAt(i).megaBonus = true;
     }
+  }
+
+  void laser() {
+    resetBonus();
+    laserTimer = 0;
   }
 
   void deleteLowerPositionBalls() {
@@ -255,7 +334,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     }
   }
 
-  void deactivateBonus() {
+  void resetBonus() {
     paddle.size.x = tileSize.x*2; // disattivo expansion e reduction
     if (balls.isNotEmpty) {
       balls.first.freezeBonus = false; // disattivo il bonus nella pallina
@@ -294,7 +373,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     else {
       remove(livesList.last);
       livesList.removeLast();
-      deactivateBonus();
+      resetBonus();
       balls.add(Ball(this,true));
       add(balls.first);
     }
@@ -305,6 +384,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     removeBlocks();
     removeComponents();
     remove(gesturesComponent);
+    level = 0;
     startHome();
   }
 
@@ -330,6 +410,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   }
 
   void removeBonuses() {
+    activeType = BonusType.normal;
     removeAll(bonusList);
     bonusList = <Bonus>[];
     bonusOnScreen = <BonusType>[];
@@ -338,30 +419,41 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   void levelCompleted() {
     removeComponents();
 
-    levelComplete = TextBoxComponent(
+    textBox = TextComponent(
       "level completed",
-      textRenderer: getPainter(60), position: Vector2(screen.x/2,screen.y/3),
-      boxConfig: TextBoxConfig(
+      textRenderer: getPainter(60),
+      position: Vector2(screen.x/2,screen.y/3),
+      /*boxConfig: TextBoxConfig(
         maxWidth: playScreenSize.x*9/10,
         timePerChar: 0.2,
-      ),
+      ),*/
       anchor: Anchor.center,
     );
-    add(levelComplete);
+    add(textBox);
     nextLevelButton = NextLevelButton(this);
     add(nextLevelButton);
+
   }
 
   void removeLevel() {
 
-    remove(levelComplete);
+    remove(textBox);
     remove(nextLevelButton);
+  }
+
+  void removeEyeSelection() {
+    remove(textBox);
+    remove(eyeButtonLeft);
+    remove(eyeButtonRight);
+    remove(noPenalizationButton);
   }
 
   void nextLevel() {
     currentLevel = levels.elementAt(level);
     currentLevel.create();
   }
+
+
 }
 
 

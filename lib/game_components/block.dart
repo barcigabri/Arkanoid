@@ -1,8 +1,10 @@
 import 'dart:ui';
 import 'package:arkanoid/game_components/ball.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flame/components.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
@@ -147,7 +149,7 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
      case 1:
      case 3:
        removeBlock();
-       print(game.bonusOnScreen);
+       FlameAudio.audioCache.play('sfx/beeep.mp3', mode: PlayerMode.LOW_LATENCY);
        if (game.blocks.isEmpty) {
          game.levelCompleted();
        }
@@ -157,6 +159,7 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
        break;
      case 2:
        lives++;
+       FlameAudio.audioCache.play('sfx/bing.mp3', mode: PlayerMode.LOW_LATENCY);
        break;
    }
 

@@ -39,6 +39,10 @@ dependencies:
       url: https://github.com/flame-engine/flame.git
       ref: main
       path: packages/flame
+  flame_audio: ^1.0.0-rc.15
+  audioplayers: ^0.20.1
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -67,6 +71,8 @@ flutter:
     - assets/images/background/
     - assets/images/powerUp/
     - assets/images/components/
+    - assets/audio/sfx/
+    - assets/audio/bgm/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
@@ -80,10 +86,16 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
-    - family: iomanoid
+    - family: arcade
       fonts:
-        - asset: assets/fonts/iomanoid.ttf
+        - asset: assets/fonts/arcadeLmoved.ttf
 
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+dependency_overrides:
+  flame:
+    git:
+      url: https://github.com/flame-engine/flame.git
+      ref: main
+      path: packages/flame

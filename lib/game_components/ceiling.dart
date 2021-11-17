@@ -12,6 +12,7 @@ class Ceiling extends PositionComponent with HasHitboxes, Collidable {
   late Sprite bgSprite;
   late HitboxRectangle shape;
   late Vector2 p, s;
+  bool last=false;
 
   Ceiling(this.game, Vector2 pos, Vector2 siz) : super (
       position: pos,
