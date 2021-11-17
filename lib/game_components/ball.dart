@@ -105,7 +105,6 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
   @override
   void update(double dt) {
     super.update(dt);
-
     if(freeze) {
       position.x = game.paddle.xPaddle - difference;
       position.y = game.paddle.position.y-size.x/2;
@@ -115,6 +114,18 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
       dt = 0;
     }
     position.add(velocity * dt);
+    if(position.x < game.playScreenPosition.x) {
+      position.x = game.playScreenPosition.x + size.x / 2;
+      velocity.x = -velocity.x;
+    }
+    if(position.x > game.playScreenPosition.x + game.playScreenSize.x) {
+      position.x = game.playScreenPosition.x + game.playScreenSize.x - size.x / 2;
+      velocity.x = -velocity.x;
+    }
+    if(position.y > game.playScreenPosition.y) {
+      position.y = game.playScreenPosition.y + size.y / 2;
+      velocity.x = -velocity.y;
+    }
   }
 
   void ballRotation(double xPoint){ // angle in degrees

@@ -91,8 +91,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    blockSound = await AudioPool.create('beeep.mp3');
-    steelSound = await AudioPool.create('bing.mp3');
+    blockSound = await AudioPool.create('beeep.mp3', maxPlayers: 1);
+    steelSound = await AudioPool.create('bing.mp3', maxPlayers: 1);
     wallSound = await AudioPool.create('plop.mp3');
     lostLifeSound = await AudioPool.create('vgdeathsound.mp3');
 
