@@ -122,7 +122,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
       position.x = game.playScreenPosition.x + game.playScreenSize.x - size.x / 2;
       velocity.x = -velocity.x;
     }
-    if(position.y > game.playScreenPosition.y) {
+    if(position.y < game.playScreenPosition.y) {
       position.y = game.playScreenPosition.y + size.y / 2;
       velocity.x = -velocity.y;
     }

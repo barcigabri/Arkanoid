@@ -37,7 +37,6 @@ class BottomHole extends SpriteComponent with HasHitboxes, Collidable {
 
   void ballCollision(Ball ball, Set<Vector2> points) {
     // FlameAudio.audioCache.play('sfx/vgdeathsound.mp3', mode: PlayerMode.LOW_LATENCY);
-    game.lostLifeSound.start();
     ball.lock = false;
     ball.strongLock = false;
     ball.previousBlock = Vector2.zero();

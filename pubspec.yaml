@@ -88,7 +88,7 @@ flutter:
   fonts:
     - family: arcade
       fonts:
-        - asset: assets/fonts/arcadeLmoved.ttf
+        - asset: assets/fonts/PressStart2P-Regular.ttf
 
   #
   # For details regarding fonts from package dependencies,

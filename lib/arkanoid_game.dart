@@ -20,16 +20,19 @@ import 'package:arkanoid/level_components/level4.dart';
 import 'package:arkanoid/level_components/level5.dart';
 import 'package:arkanoid/utilities_components/eye_button.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
+import 'package:arkanoid/utilities_components/home_button.dart';
 import 'package:arkanoid/utilities_components/next_level_button.dart';
 import 'package:arkanoid/utilities_components/no_penalization_button.dart';
 import 'package:arkanoid/utilities_components/start_button.dart';
 import 'package:arkanoid/utilities_components/vr.dart';
 import 'package:arkanoid/view.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame_audio/audio_pool.dart';
+import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 
 
@@ -64,6 +67,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late bool penalizedEyeIsLeft;
   late bool penalizedEyeIsSet = false;
   late NoPenalizationButton noPenalizationButton;
+  late HomeButton homeButton;
   double laserTimer = 0;
 
 
@@ -84,6 +88,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late AudioPool steelSound;
   late AudioPool wallSound;
   late AudioPool lostLifeSound;
+  late AudioPlayer gameOverBGM;
 
   bool lockOnTapUp = false;
 
@@ -95,6 +100,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     steelSound = await AudioPool.create('bing.mp3', maxPlayers: 1);
     wallSound = await AudioPool.create('plop.mp3');
     lostLifeSound = await AudioPool.create('vgdeathsound.mp3');
+    gameOverBGM = await FlameAudio.audioCache.loop('bgm/KL Peach Game Over 2.mp3', volume: .25);
+    gameOverBGM.pause();
 
     screen=Vector2(size.x/2,size.y);
     tileSize = Vector2((screen.x*2/3)/13,(screen.x/3)/13);
@@ -160,6 +167,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   }
 
   void startHome() {
+    playHomeBGM();
+    penalizedEyeIsSet = false;
     logo = TextComponent("ARKANOID",
       position: Vector2(screen.x/2,screen.y/3),
       //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
@@ -169,6 +178,10 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     startButton = StartButton(this);
     add(startButton);
   }
+
+  //
+  // aggiungere power up (quelli attuali hanno dimensione totale 108x91, singola immagine 12x13)
+  //
 
   void removeHome() {
     remove(logo);
@@ -381,6 +394,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
       lostGame();
     }
     else {
+      lostLifeSound.start();
       remove(livesList.last);
       livesList.removeLast();
       resetBonus();
@@ -395,7 +409,39 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     removeComponents();
     remove(gesturesComponent);
     level = 0;
-    startHome();
+    lostScreen();
+    //startHome();
+  }
+
+  void lostScreen() {
+    //FlameAudio.bgm.audioCache.play('bgm/KL Peach Game Over 2.mp3');
+    playGameOverBGM();
+    textBox = TextComponent(
+      "GAME OVER",
+      textRenderer: getPainter(30),
+      position: Vector2(screen.x/2,screen.y/3),
+      /*boxConfig: TextBoxConfig(
+        maxWidth: playScreenSize.x*9/10,
+        timePerChar: 0.2,
+      ),*/
+      anchor: Anchor.center,
+    );
+    add(textBox);
+    homeButton = HomeButton(this);
+    add(homeButton);
+  }
+
+  void playHomeBGM() {
+    gameOverBGM.pause();
+    gameOverBGM.seek(Duration.zero);
+
+  }
+
+  void playGameOverBGM() {
+    /*gameOverBGM.pause();
+    gameOverBGM.seek(Duration.zero);*/
+    gameOverBGM.resume();
+
   }
 
   void removeBlocks() {
@@ -430,8 +476,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     removeComponents();
 
     textBox = TextComponent(
-      "level completed",
-      textRenderer: getPainter(60),
+      "LEVEL\nCOMPLETED",
+      textRenderer: getPainter(30),
       position: Vector2(screen.x/2,screen.y/3),
       /*boxConfig: TextBoxConfig(
         maxWidth: playScreenSize.x*9/10,
@@ -461,6 +507,12 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   void nextLevel() {
     currentLevel = levels.elementAt(level);
     currentLevel.create();
+  }
+
+  void removeLostScreen() {
+    remove(textBox);
+    remove(homeButton);
+    playHomeBGM();
   }
 
 

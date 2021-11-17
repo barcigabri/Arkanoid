@@ -27,12 +27,13 @@ void main() async {
     'components/life.png'
   ]);
 
-  /*await FlameAudio.audioCache.loadAll(<String>[
-    'sfx/beeep.mp3',
+  await FlameAudio.audioCache.loadAll(<String>[
+    /*'sfx/beeep.mp3',
     'sfx/plop.mp3',
     'sfx/bing.mp3',
-    'sfx/vgdeathsound.mp3'
-  ]);*/
+    'sfx/vgdeathsound.mp3',*/
+    'bgm/KL Peach Game Over 2.mp3'
+  ]);
 
 
 
