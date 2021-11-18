@@ -24,7 +24,8 @@ void main() async {
     'powerUp/r.png',
     'powerUp/m.png',
     'powerUp/l.png',
-    'components/life.png'
+    'components/life.png',
+    'powerUp/powerups.png'
   ]);
 
   await FlameAudio.audioCache.loadAll(<String>[

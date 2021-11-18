@@ -31,6 +31,7 @@ import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flame/sprite.dart';
 import 'package:flame_audio/audio_pool.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,15 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late NoPenalizationButton noPenalizationButton;
   late HomeButton homeButton;
   double laserTimer = 0;
+
+  // Animations
+  final double animationSpeed = 0.15;
+  late final SpriteAnimation disruption;
+  late final SpriteAnimation mega;
+  late final SpriteAnimation freeze;
+  late final SpriteAnimation expansion;
+  late final SpriteAnimation reduction;
+  late final SpriteAnimation lasers;
 
 
   double penalizationPercentage = 0.5;
@@ -515,6 +525,19 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     playHomeBGM();
   }
 
+  void loadAnimation() {
+    final spriteSheet = SpriteSheet(
+        image: Flame.images.fromCache('powerUp/powerups.png'),
+        srcSize: Vector2(16.0, 8.0),
+    );
+    disruption = spriteSheet.createAnimation(row: 2, stepTime: animationSpeed);
+    expansion = spriteSheet.createAnimation(row: 3, stepTime: animationSpeed);
+    reduction = spriteSheet.createAnimation(row: 0, stepTime: animationSpeed);
+    mega = spriteSheet.createAnimation(row: 5, stepTime: animationSpeed);
+    lasers = spriteSheet.createAnimation(row: 4, stepTime: animationSpeed);
+    freeze = spriteSheet.createAnimation(row: 1, stepTime: animationSpeed);
+
+  }
 
 }
 
