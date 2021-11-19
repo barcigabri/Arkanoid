@@ -14,7 +14,7 @@ class SliderSelection extends PositionComponent with Tappable{
   // Il PositionComponent mette l'origine in position, size serve per conoscere la superficie tappabile
   SliderSelection(this.selector, this.pos, this.siz) : super (
     position: Vector2(pos.x - siz.x / 8, pos.y - siz.y * 8),
-    size: Vector2(siz.x + siz.x / 4, siz.y * 16),
+    size: Vector2(siz.x + siz.x / 4, siz.y * 27),
     anchor: Anchor.topLeft
   ) {
     pos = pos - position;

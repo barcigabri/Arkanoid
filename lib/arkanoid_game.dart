@@ -23,6 +23,7 @@ import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
 import 'package:arkanoid/utilities_components/home_button.dart';
 import 'package:arkanoid/utilities_components/next_level_button.dart';
 import 'package:arkanoid/utilities_components/no_penalization_button.dart';
+import 'package:arkanoid/utilities_components/play_button.dart';
 import 'package:arkanoid/utilities_components/selector_difficulty.dart';
 import 'package:arkanoid/utilities_components/selector_eye.dart';
 import 'package:arkanoid/utilities_components/slider.dart';
@@ -119,6 +120,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late SliderSelection slider;
   late final SelectorDifficulty selectorDifficulty;
   late final SelectorEye selectorEye;
+  late PlayButton playButton;
 
 
   @override
@@ -276,7 +278,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     add(slider);
     add(selectorEye);
     addAll(eyeChoice);
-    add(slider);
+    playButton = PlayButton(this);
+    add(playButton);
 
     //eyeButtonLeft = EyeButton(this, true);
     //eyeButtonRight = EyeButton(this, false);
@@ -293,6 +296,18 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     penalizedEyeIsLeft = isLeft;
     penalizedEyeIsSet = true;
     startGame();
+  }
+
+  void removeEyeSelection() {
+    remove(textBox);
+    remove(slider);
+    remove(selectorEye);
+    removeAll(eyeChoice);
+    remove(playButton);
+
+    // remove(eyeButtonLeft);
+    // remove(eyeButtonRight);
+    // remove(noPenalizationButton);
   }
 
   void startGame() {
@@ -604,12 +619,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     remove(nextLevelButton);
   }
 
-  void removeEyeSelection() {
-    remove(textBox);
-    remove(eyeButtonLeft);
-    remove(eyeButtonRight);
-    remove(noPenalizationButton);
-  }
+
 
   void nextLevel() {
     gesturesComponent = GestureInvisibleScreen(this);
