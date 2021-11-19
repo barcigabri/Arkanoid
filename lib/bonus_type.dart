@@ -5,5 +5,6 @@ enum BonusType {
   freezing,
   mega,
   laser,
+  player,
   normal,
 }

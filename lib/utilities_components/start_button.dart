@@ -8,7 +8,7 @@ class StartButton extends TextComponent with Tappable {
 
   StartButton(this.game) : super (
     "START",
-    position: Vector2(game.screen.x/2,game.screen.y*2/3),
+    position: Vector2(game.screen.x/2,game.screen.y*3/4 + game.tileSize.y*2),
     //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
     textRenderer: game.getPainter(20),
   ) {

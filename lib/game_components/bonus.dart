@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
 
-class Bonus extends SpriteComponent with HasHitboxes, Collidable {
+class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   double speed = 60;
@@ -22,7 +22,7 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
 
   Bonus(this.game, Vector2 pos) : super (
       position: Vector2(pos.x + game.tileSize.x/5,pos.y),
-      size: game.tileSize*3/5,
+      size: game.tileSize*4/5,
       anchor:Anchor.center,
   ) {
     double moltiplicatore = speed / 353.53846153846155;
@@ -39,7 +39,8 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
 
     do { // scelgo il tipo di bonus
       type = BonusType.values.elementAt(game.rnd.nextInt(BonusType.values.length - 1));
-    } while (game.bonusOnScreen.contains(type) || type == game.activeType);
+      print(type);
+    } while (game.bonusOnScreen.contains(type) || type == game.activeType || (type == BonusType.player && game.rnd.nextDouble() > 0.6)); // Ho solo il 60% di possibilità di guadagnare una vita quando esce il bonus corrispondente
     game.bonusOnScreen.add(type);
     assignSprite();
   }
@@ -70,6 +71,9 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
         case BonusType.laser:
           game.laser();
           break;
+        case BonusType.player:
+          game.extraLifePlayer();
+          break;
       }
 
     }
@@ -85,7 +89,7 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
     boxPaint.color = Color(0xFFFFFF00);
 
     super.render(canvas);
-    renderHitboxes(canvas);
+    //renderHitboxes(canvas);
     //canvas.drawRect(wallRect, boxPaint);
     //bgSprite.renderRect(c, bgRect); // stampa sfondo immagine
   }
@@ -100,24 +104,33 @@ class Bonus extends SpriteComponent with HasHitboxes, Collidable {
     switch(type) {
       case BonusType.disruption:
         letter ='d';
+        animation = game.disruption;
         break;
       case BonusType.expansion:
         letter ='e';
+        animation = game.expansion;
         break;
       case BonusType.freezing:
         letter ='f';
+        animation = game.freeze;
         break;
       case BonusType.reduction:
         letter ='r';
+        animation = game.reduction;
         break;
       case BonusType.mega:
         letter ='m';
+        animation = game.mega;
         break;
       case BonusType.laser:
         letter ='l';
+        animation = game.lasers;
+        break;
+      case BonusType.player:
+        animation = game.player;
         break;
     }
-    sprite = Sprite(Flame.images.fromCache("powerUp/$letter.png"));
+    //sprite = Sprite(Flame.images.fromCache("powerUp/$letter.png"));
     //print("powerUp/$letter.png");
 
   }

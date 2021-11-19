@@ -22,7 +22,7 @@ class NextLevelButton extends TextComponent with Tappable {
 
   @override
   bool onTapUp(TapUpInfo event) {
-    game.lockOnTapUp = true;
+    //game.lockOnTapUp = true;
     textRenderer = game.getPainter(20);
     game.removeLevel();
     game.level++;

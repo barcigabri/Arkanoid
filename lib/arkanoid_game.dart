@@ -23,6 +23,9 @@ import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
 import 'package:arkanoid/utilities_components/home_button.dart';
 import 'package:arkanoid/utilities_components/next_level_button.dart';
 import 'package:arkanoid/utilities_components/no_penalization_button.dart';
+import 'package:arkanoid/utilities_components/selector_difficulty.dart';
+import 'package:arkanoid/utilities_components/selector_eye.dart';
+import 'package:arkanoid/utilities_components/slider.dart';
 import 'package:arkanoid/utilities_components/start_button.dart';
 import 'package:arkanoid/utilities_components/vr.dart';
 import 'package:arkanoid/view.dart';
@@ -35,15 +38,13 @@ import 'package:flame/sprite.dart';
 import 'package:flame_audio/audio_pool.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
-
+import 'package:ocarina/ocarina.dart';
 
 class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents, HasDraggableComponents {
   View activeView = View.home;
   late Vector2 screen;
   bool init = false;
   late Vr vrLeft, vrRight;
-  late Wall wallLeft, wallRight;
-  late Ceiling ceiling;
   late List<Ball> balls;
   late Paddle paddle;
   late LateralPaddle lpl,lpr;
@@ -61,6 +62,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late StartButton startButton;
   late TextComponent logo;
   late TextComponent textBox;
+  late List<TextComponent> difficulties;
+  late List<TextComponent> eyeChoice;
   late NextLevelButton nextLevelButton;
   late Level currentLevel;
   late EyeButton eyeButtonLeft, eyeButtonRight;
@@ -79,6 +82,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late final SpriteAnimation expansion;
   late final SpriteAnimation reduction;
   late final SpriteAnimation lasers;
+  late final SpriteAnimation player;
 
 
   double penalizationPercentage = 0.5;
@@ -94,24 +98,47 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   int lives = 2;
 
   late final List<Level> levels;
-  late AudioPool blockSound;
-  late AudioPool steelSound;
+
+  late OcarinaPlayer blockSound;
+  late OcarinaPlayer steelSound;
   late AudioPool wallSound;
   late AudioPool lostLifeSound;
   late AudioPlayer gameOverBGM;
 
+  bool activeSlider = false;
+
+
   bool lockOnTapUp = false;
+
+  late Vector2 linePosition;
+  late Vector2 lineSize;
+  late Vector2 selectorPosition;
+  late Vector2 selectorSize;
+
+
+  late SliderSelection slider;
+  late final SelectorDifficulty selectorDifficulty;
+  late final SelectorEye selectorEye;
 
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    blockSound = await AudioPool.create('beeep.mp3', maxPlayers: 1);
-    steelSound = await AudioPool.create('bing.mp3', maxPlayers: 1);
+    blockSound = OcarinaPlayer(
+      asset: 'assets/audio/sfx/beeep.mp3'
+    );
+    await blockSound.load();
+    steelSound = OcarinaPlayer(
+        asset: 'assets/audio/sfx/bing.mp3'
+    );
+    await steelSound.load();
+
+    // steelSound = await AudioPool.create('bing.mp3', maxPlayers: 4);
     wallSound = await AudioPool.create('plop.mp3');
     lostLifeSound = await AudioPool.create('vgdeathsound.mp3');
     gameOverBGM = await FlameAudio.audioCache.loop('bgm/KL Peach Game Over 2.mp3', volume: .25);
     gameOverBGM.pause();
+    loadAnimation();
 
     screen=Vector2(size.x/2,size.y);
     tileSize = Vector2((screen.x*2/3)/13,(screen.x/3)/13);
@@ -124,6 +151,55 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     add(BottomHole(this));
     vrLeft = Vr(this,1);
     vrRight = Vr(this,2);
+
+    linePosition = Vector2(screen.x / 2 - playScreenSize.x * 3 / 8, screen.y / 2 + tileSize.y * 2);
+    lineSize = Vector2(playScreenSize.x * 3 / 4, tileSize.y / 4);
+
+
+    selectorPosition = linePosition + Vector2(0, lineSize.y / 2);
+    selectorSize = Vector2.all(lineSize.y * 10);
+
+
+    difficulties = [
+      TextComponent("EASY",
+          position: Vector2(linePosition.x, linePosition.y + tileSize.y * 3),
+          //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
+          anchor: Anchor.center,
+          textRenderer: getPainter(10)),
+      TextComponent("MEDIUM",
+          position: Vector2(linePosition.x + lineSize.x / 2, linePosition.y + tileSize.y * 3),
+          //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
+          anchor: Anchor.center,
+          textRenderer: getPainter(10)),
+      TextComponent("HARD",
+          position: Vector2(linePosition.x + lineSize.x, linePosition.y + tileSize.y * 3),
+          //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
+          anchor: Anchor.center,
+          textRenderer: getPainter(10))
+    ];
+
+    selectorDifficulty = SelectorDifficulty(this, selectorPosition, selectorSize, selectorPosition.x, selectorPosition.x + lineSize.x, 1);
+
+
+    eyeChoice = [
+      TextComponent("LEFT",
+          position: Vector2(linePosition.x, linePosition.y + tileSize.y * 3),
+          //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
+          anchor: Anchor.center,
+          textRenderer: getPainter(10)),
+      TextComponent("NORMAL",
+          position: Vector2(linePosition.x + lineSize.x / 2, linePosition.y + tileSize.y * 3),
+          //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
+          anchor: Anchor.center,
+          textRenderer: getPainter(10)),
+      TextComponent("RIGHT",
+          position: Vector2(linePosition.x + lineSize.x, linePosition.y + tileSize.y * 3),
+          //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
+          anchor: Anchor.center,
+          textRenderer: getPainter(10))
+    ];
+
+    selectorEye = SelectorEye(this, selectorPosition + Vector2(lineSize.x / 2, 0), selectorSize, selectorPosition.x, selectorPosition.x + lineSize.x, 2);
 
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
@@ -150,41 +226,25 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     //startGame();
   }
 
-  TextPaint getPainter(double fSize) {
-    TextPaint painter;
-    TextStyle textStyle;
-
-    textStyle = TextStyle(
-      fontFamily: 'arcade',
-      fontSize: fSize,
-      color: Color(0xffffffff),
-      /*shadows: const <Shadow>[
-        Shadow(
-          blurRadius: 7,
-          color: Color(0xffff0000),
-          offset: Offset(2, 2),
-        ),
-      ],*/
-    );
-
-    painter = TextPaint(
-        style: textStyle,
-        textDirection: TextDirection.ltr,
-
-    );
-
-    return painter;
-  }
-
   void startHome() {
     playHomeBGM();
     penalizedEyeIsSet = false;
     logo = TextComponent("ARKANOID",
-      position: Vector2(screen.x/2,screen.y/3),
+      position: Vector2(screen.x/2,screen.y/4),
       //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
       anchor: Anchor.center,
       textRenderer: getPainter(30));
     add(logo);
+    textBox = TextComponent("SELECT DIFFICULTY",
+        position: Vector2(screen.x/2,screen.y/2 - tileSize.y * 2),
+        //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
+        anchor: Anchor.center,
+        textRenderer: getPainter(10));
+    add(textBox);
+    slider = SliderSelection(selectorDifficulty, linePosition, lineSize);
+    add(slider);
+    add(selectorDifficulty);
+    addAll(difficulties);
     startButton = StartButton(this);
     add(startButton);
   }
@@ -195,25 +255,35 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
   void removeHome() {
     remove(logo);
+    remove(textBox);
+    remove(slider);
+    remove(selectorDifficulty);
+    removeAll(difficulties);
     remove(startButton);
   }
 
   void selectEye() {
     textBox = TextComponent(
-      "SCEGLI\nL'OCCHIO\nAMBLIOPICO",
-      textRenderer: getPainter(25), position: Vector2(screen.x/2,screen.y/3),
+      "SCEGLI L'OCCHIO\n\nAMBLIOPICO",
+      textRenderer: getPainter(15), position: Vector2(screen.x/2,screen.y/3),
       /*boxConfig: TextBoxConfig(
         maxWidth: playScreenSize.x*9/10,
       ),*/
       anchor: Anchor.center,
     );
     add(textBox);
-    eyeButtonLeft = EyeButton(this, true);
-    eyeButtonRight = EyeButton(this, false);
-    noPenalizationButton = NoPenalizationButton(this);
-    add(eyeButtonLeft);
-    add(eyeButtonRight);
-    add(noPenalizationButton);
+    slider = SliderSelection(selectorEye, linePosition, lineSize);
+    add(slider);
+    add(selectorEye);
+    addAll(eyeChoice);
+    add(slider);
+
+    //eyeButtonLeft = EyeButton(this, true);
+    //eyeButtonRight = EyeButton(this, false);
+    //noPenalizationButton = NoPenalizationButton(this);
+    //add(eyeButtonLeft);
+    //add(eyeButtonRight);
+    //add(noPenalizationButton);
 
   }
 
@@ -226,8 +296,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   }
 
   void startGame() {
-    gesturesComponent = GestureInvisibleScreen(this);
-    add(gesturesComponent);
+    lives = 2;
     bonusList = <Bonus>[];
     livesList = <Life>[];
     for(int i=0; i<lives; i++) {
@@ -350,6 +419,12 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     laserTimer = 0;
   }
 
+  void extraLifePlayer() {
+    livesList.add(Life(this,lives));
+    add(livesList.last);
+    lives++;
+  }
+
   void deleteLowerPositionBalls() {
     double min = screen.y;
     int index=0;
@@ -400,6 +475,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     paddle.xPaddle = screen.x/2; // Quando perde una vita rimetto il paddle al centro
     paddle.position.x = paddle.xPaddle;
     removeBonuses();
+    lives--;
     if(livesList.isEmpty) {
       lostGame();
     }
@@ -462,6 +538,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     removePaddle();
     removeBalls();
     removeBonuses();
+    remove(gesturesComponent);
   }
 
   void removePaddle() {
@@ -485,24 +562,44 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   void levelCompleted() {
     removeComponents();
 
-    textBox = TextComponent(
-      "LEVEL\nCOMPLETED",
-      textRenderer: getPainter(30),
-      position: Vector2(screen.x/2,screen.y/3),
-      /*boxConfig: TextBoxConfig(
+    if(level < levels.length-1) {
+      textBox = TextComponent(
+        "LEVEL\nCOMPLETED",
+        textRenderer: getPainter(30),
+        position: Vector2(screen.x / 2, screen.y / 3),
+        /*boxConfig: TextBoxConfig(
         maxWidth: playScreenSize.x*9/10,
         timePerChar: 0.2,
       ),*/
-      anchor: Anchor.center,
-    );
+        anchor: Anchor.center,
+      );
+      nextLevelButton = NextLevelButton(this);
+      add(nextLevelButton);
+    }
+    else {
+      removeLives();
+      textBox = TextComponent(
+        "GAME\nCOMPLETED",
+        textRenderer: getPainter(30),
+        position: Vector2(screen.x / 2, screen.y / 3),
+        /*boxConfig: TextBoxConfig(
+        maxWidth: playScreenSize.x*9/10,
+        timePerChar: 0.2,
+      ),*/
+        anchor: Anchor.center,
+      );
+      level = 0;
+      homeButton = HomeButton(this);
+      add(homeButton);
+    }
     add(textBox);
-    nextLevelButton = NextLevelButton(this);
-    add(nextLevelButton);
+  }
 
+  void removeLives() {
+    removeAll(livesList);
   }
 
   void removeLevel() {
-
     remove(textBox);
     remove(nextLevelButton);
   }
@@ -515,6 +612,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   }
 
   void nextLevel() {
+    gesturesComponent = GestureInvisibleScreen(this);
+    add(gesturesComponent);
     currentLevel = levels.elementAt(level);
     currentLevel.create();
   }
@@ -536,7 +635,31 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     mega = spriteSheet.createAnimation(row: 5, stepTime: animationSpeed);
     lasers = spriteSheet.createAnimation(row: 4, stepTime: animationSpeed);
     freeze = spriteSheet.createAnimation(row: 1, stepTime: animationSpeed);
+    player = spriteSheet.createAnimation(row: 6, stepTime: animationSpeed);
+  }
 
+  TextPaint getPainter(double fSize) {
+    TextPaint painter;
+    TextStyle textStyle;
+
+    textStyle = TextStyle(
+      fontFamily: 'arcade',
+      fontSize: fSize,
+      color: Color(0xffffffff),
+      /*shadows: const <Shadow>[
+        Shadow(
+          blurRadius: 7,
+          color: Color(0xffff0000),
+          offset: Offset(2, 2),
+        ),
+      ],*/
+    );
+
+    painter = TextPaint(
+      style: textStyle,
+      textDirection: TextDirection.ltr,
+    );
+    return painter;
   }
 
 }

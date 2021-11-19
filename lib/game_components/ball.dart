@@ -17,7 +17,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late HitboxCircle shape;
   late Vector2 velocity;
-  double speed = 200;
+  late double speed;
   bool lock = false;
   bool strongLock = false;
   Vector2 previousBlock  = Vector2.zero();
@@ -43,6 +43,8 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
     anchor: Anchor.center,
   ) {
 
+    speed = 150 + game.selectorDifficulty.difficulty * 50;
+
     double moltiplicatore = speed / 353.53846153846155;
     speed = game.playScreenSize.y * moltiplicatore;
     addHitbox(HitboxCircle());
@@ -59,7 +61,6 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
       velocity = angleToDirection(angle);
       position = game.balls.first.position;
     }
-    //velocity = Vector2(0, game.size.y)..scaleTo(speed);
 
   }
 
@@ -124,7 +125,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
     }
     if(position.y < game.playScreenPosition.y) {
       position.y = game.playScreenPosition.y + size.y / 2;
-      velocity.x = -velocity.y;
+      velocity.y = -velocity.y;
     }
   }
 
@@ -177,12 +178,10 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
 
   void movementOnOff(bool movement) {
     if(movement) {
-      //speed = 150;
       ballRotation(game.paddle.xPaddle - difference);
     }
     else {
       velocity = Vector2.zero();
-      //speed = 0;
     }
   }
 
