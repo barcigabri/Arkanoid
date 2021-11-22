@@ -147,6 +147,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     playScreenSize = Vector2(tileSize.x*13,tileSize.y*33);
     playScreenPosition = Vector2(screen.x/6,(screen.y-playScreenSize.y)/2);
 
+
+
     add(Wall(this,Vector2.all(0),Vector2(screen.x/6,screen.y)));
     add(Ceiling(this,Vector2.all(0),Vector2(screen.x,(screen.y-playScreenSize.y)/2)));
     add(Wall(this,Vector2(screen.x-screen.x/6, 0),Vector2(screen.x/6,screen.y)));
@@ -383,13 +385,6 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     }
   }
 
-
-
-  @override
-  void onHorizontalDragUpdate(DragUpdateInfo info) {
-    paddle.xPaddle = info.eventPosition.game.x;
-
-  }
 
 
 
@@ -649,6 +644,11 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   }
 
   TextPaint getPainter(double fSize) {
+    // mio: 417.8181818181818,392.72727272727275
+    // avd: 383.45454545454544,392.72727272727275
+
+    fSize = fSize * screen.x / 417.8181818181818;
+
     TextPaint painter;
     TextStyle textStyle;
 
