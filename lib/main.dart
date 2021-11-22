@@ -25,6 +25,7 @@ void main() async {
     'powerUp/m.png',
     'powerUp/l.png',
     'components/life.png',
+    'components/paddle.png',
     'powerUp/powerups.png'
   ]);
 

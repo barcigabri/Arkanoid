@@ -49,6 +49,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late List<Ball> balls;
   late Paddle paddle;
   late LateralPaddle lpl,lpr;
+  late Wall wallLeft, wallRight;
+  late Ceiling ceiling;
   late Vector2 tileSize;
   late List<Vector3> levelPosition;
   late Vector2 playScreenPosition;
@@ -84,6 +86,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late final SpriteAnimation reduction;
   late final SpriteAnimation lasers;
   late final SpriteAnimation player;
+
+  late final SpriteAnimation paddleAnimation;
 
 
   double penalizationPercentage = 0.5;
@@ -140,7 +144,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     lostLifeSound = await AudioPool.create('vgdeathsound.mp3');
     gameOverBGM = await FlameAudio.audioCache.loop('bgm/KL Peach Game Over 2.mp3', volume: .25);
     gameOverBGM.pause();
-    loadAnimation();
+
+    loadAnimations();
 
     screen=Vector2(size.x/2,size.y);
     tileSize = Vector2((screen.x*2/3)/13,(screen.x/3)/13);
@@ -148,10 +153,12 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     playScreenPosition = Vector2(screen.x/6,(screen.y-playScreenSize.y)/2);
 
 
-
-    add(Wall(this,Vector2.all(0),Vector2(screen.x/6,screen.y)));
-    add(Ceiling(this,Vector2.all(0),Vector2(screen.x,(screen.y-playScreenSize.y)/2)));
-    add(Wall(this,Vector2(screen.x-screen.x/6, 0),Vector2(screen.x/6,screen.y)));
+    wallLeft = Wall(this,Vector2.all(0),Vector2(screen.x/6,screen.y));
+    add(wallLeft);
+    ceiling = Ceiling(this,Vector2.all(0),Vector2(screen.x,(screen.y-playScreenSize.y)/2));
+    add(ceiling);
+    wallRight = Wall(this,Vector2(screen.x-screen.x/6, 0),Vector2(screen.x/6,screen.y));
+    add(wallRight);
     add(BottomHole(this));
     vrLeft = Vr(this,1);
     vrRight = Vr(this,2);
@@ -629,7 +636,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     playHomeBGM();
   }
 
-  void loadAnimation() {
+  void loadAnimations() {
     final spriteSheet = SpriteSheet(
         image: Flame.images.fromCache('powerUp/powerups.png'),
         srcSize: Vector2(16.0, 8.0),
@@ -641,6 +648,13 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     lasers = spriteSheet.createAnimation(row: 4, stepTime: animationSpeed);
     freeze = spriteSheet.createAnimation(row: 1, stepTime: animationSpeed);
     player = spriteSheet.createAnimation(row: 6, stepTime: animationSpeed);
+
+    final paddleSheet = SpriteSheet(
+        image: Flame.images.fromCache('components/paddle.png'),
+        srcSize: Vector2(16.0, 8.0),
+    );
+    //paddleAnimation =
+
   }
 
   TextPaint getPainter(double fSize) {

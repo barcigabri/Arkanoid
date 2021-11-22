@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
 
-class Paddle extends PositionComponent with HasHitboxes, Collidable {
+class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   late Rect wallRect;
@@ -34,15 +34,17 @@ class Paddle extends PositionComponent with HasHitboxes, Collidable {
     if (!ball.lock && !ball.strongLock && !ball.freeze) {
       ball.lock = true;
       ball.previousBlock = Vector2.zero();
-
       ball.ballRotation(points.first.x);
 
     }
     if(ball.freezeBonus) {
       ball.freeze = true;
       ball.movementOnOff(false);
-      ball.difference = game.paddle.xPaddle-ball.position.x;
+      ball.difference = xPaddle-ball.position.x;
     }
+    game.wallLeft.isLast = false;
+    game.wallRight.isLast = false;
+    game.ceiling.isLast = false;
   }
 
   void restorePosition() {

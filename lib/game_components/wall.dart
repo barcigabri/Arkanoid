@@ -13,6 +13,7 @@ class Wall extends PositionComponent with HasHitboxes, Collidable {
   late Rect wallRect;
   late HitboxRectangle shape;
   late Vector2 p, s;
+  bool isLast = false;
 
   Wall(this.game, Vector2 pos, Vector2 siz) : super (
     position: pos,
@@ -39,13 +40,19 @@ class Wall extends PositionComponent with HasHitboxes, Collidable {
     ball.lock = false;
     ball.previousBlock = Vector2.zero();
     if(!ball.freeze) {
-      if (ball.velocity.x > 0) {
+      /*if (ball.velocity.x > 0) {
         ball.position.x -= 2;
       }
       else {
         ball.position.x += 2;
+      }*/
+      if (!isLast) {
+        game.wallLeft.isLast = false;
+        game.wallRight.isLast = false;
+        game.ceiling.isLast = false;
+        isLast = true;
+        ball.velocity = Vector2(-ball.velocity.x, ball.velocity.y);
       }
-      ball.velocity = Vector2(-ball.velocity.x, ball.velocity.y);
     }
     else {
       if(position.x < game.screen.x/2) { //controllo se la parete viene prima o dopo la metà per capire se è la sx o la dx

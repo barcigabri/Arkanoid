@@ -130,6 +130,9 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
     else {
       collisionEndProcedure();
     }
+    game.wallLeft.isLast = false;
+    game.wallRight.isLast = false;
+    game.ceiling.isLast = false;
 
   }
 
@@ -148,8 +151,8 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
      case 3:
        removeBlock();
        // FlameAudio.audioCache.play('sfx/beeep.mp3', mode: PlayerMode.LOW_LATENCY);
-       game.blockSound.seek(Duration());
-       game.blockSound.play();
+       // game.blockSound.seek(Duration());
+       // game.blockSound.play();
        if (game.blocks.isEmpty) {
          game.levelCompleted();
        }
@@ -160,8 +163,8 @@ class Block extends PositionComponent with HasHitboxes, Collidable {
      case 2:
        lives++;
        // FlameAudio.audioCache.play('sfx/bing.mp3', mode: PlayerMode.LOW_LATENCY);
-       game.steelSound.seek(Duration());
-       game.steelSound.play();
+       // game.steelSound.seek(Duration());
+       // game.steelSound.play();
        break;
    }
 

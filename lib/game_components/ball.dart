@@ -43,7 +43,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
     anchor: Anchor.center,
   ) {
 
-    speed = 150 + game.selectorDifficulty.difficulty * 50;
+    speed = 100 + game.selectorDifficulty.difficulty * 100;
 
     double moltiplicatore = speed / 353.53846153846155;
     speed = game.playScreenSize.y * moltiplicatore;
@@ -114,7 +114,13 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
     if(dt > 0.07) {
       dt = 0;
     }
-    position.add(velocity * dt);
+    double scaleMultiplier = 1;
+
+    if (velocity.x * dt > game.tileSize.x / 3 - 1) scaleMultiplier = (game.tileSize.x / 3 - 1) / (velocity.x * dt);
+    if (velocity.y * dt > game.tileSize.x / 3 - 1) scaleMultiplier = (game.tileSize.x / 3 - 1) / (velocity.y * dt);
+
+    position.add((velocity * dt).scaled(scaleMultiplier));
+
     if(position.x < game.playScreenPosition.x) {
       position.x = game.playScreenPosition.x + size.x / 2;
       velocity.x = -velocity.x;
@@ -140,11 +146,11 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
         xPoint - game.paddle.xPaddle < -game.paddle.size.x * 1 / 6 ||
         xPoint - game.paddle.xPaddle > game.paddle.size.x * 1 / 6 &&
             xPoint - game.paddle.xPaddle <= game.paddle.size.x * 2 / 6) {
-      angle = 45;
+      angle = 50;
       // print(2);
     }
     else {
-      angle = 20;
+      angle = 30;
       // print(3);
     }
 

@@ -12,7 +12,7 @@ class Ceiling extends PositionComponent with HasHitboxes, Collidable {
   late Sprite bgSprite;
   late HitboxRectangle shape;
   late Vector2 p, s;
-  bool last=false;
+  bool isLast = false;
 
   Ceiling(this.game, Vector2 pos, Vector2 siz) : super (
       position: pos,
@@ -36,7 +36,12 @@ class Ceiling extends PositionComponent with HasHitboxes, Collidable {
 
   void ballCollision(Ball ball, Set<Vector2> points) {
     ball.lock = false;
-    ball.velocity = Vector2(ball.velocity.x, -ball.velocity.y);
+    if(!isLast) {
+      game.wallLeft.isLast = false;
+      game.wallRight.isLast = false;
+      isLast = true;
+      ball.velocity = Vector2(ball.velocity.x, -ball.velocity.y);
+    }
     ball.position.y+=2;
     ball.previousBlock = Vector2.zero();
   }
