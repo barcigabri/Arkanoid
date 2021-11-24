@@ -18,6 +18,7 @@ import 'package:arkanoid/level_components/level2.dart';
 import 'package:arkanoid/level_components/level3.dart';
 import 'package:arkanoid/level_components/level4.dart';
 import 'package:arkanoid/level_components/level5.dart';
+import 'package:arkanoid/utilities_components/bluetooth_connection.dart';
 import 'package:arkanoid/utilities_components/eye_button.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
 import 'package:arkanoid/utilities_components/home_button.dart';
@@ -41,7 +42,7 @@ import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:ocarina/ocarina.dart';
 
-class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents, HasDraggableComponents {
+class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDraggables {
   View activeView = View.home;
   late Vector2 screen;
   bool init = false;
@@ -125,6 +126,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   late final SelectorDifficulty selectorDifficulty;
   late final SelectorEye selectorEye;
   late PlayButton playButton;
+  late BluetoothConnection bluetooth;
 
 
   @override
@@ -172,17 +174,20 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
 
     difficulties = [
-      TextComponent("EASY",
+      TextComponent(
+          text: "EASY",
           position: Vector2(linePosition.x, linePosition.y + tileSize.y * 3),
           //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
           anchor: Anchor.center,
           textRenderer: getPainter(10)),
-      TextComponent("MEDIUM",
+      TextComponent(
+          text: "MEDIUM",
           position: Vector2(linePosition.x + lineSize.x / 2, linePosition.y + tileSize.y * 3),
           //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
           anchor: Anchor.center,
           textRenderer: getPainter(10)),
-      TextComponent("HARD",
+      TextComponent(
+          text: "HARD",
           position: Vector2(linePosition.x + lineSize.x, linePosition.y + tileSize.y * 3),
           //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
           anchor: Anchor.center,
@@ -193,17 +198,20 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
 
     eyeChoice = [
-      TextComponent("LEFT",
+      TextComponent(
+          text: "LEFT",
           position: Vector2(linePosition.x, linePosition.y + tileSize.y * 3),
           //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
           anchor: Anchor.center,
           textRenderer: getPainter(10)),
-      TextComponent("NORMAL",
+      TextComponent(
+          text: "NORMAL",
           position: Vector2(linePosition.x + lineSize.x / 2, linePosition.y + tileSize.y * 3),
           //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
           anchor: Anchor.center,
           textRenderer: getPainter(10)),
-      TextComponent("RIGHT",
+      TextComponent(
+          text: "RIGHT",
           position: Vector2(linePosition.x + lineSize.x, linePosition.y + tileSize.y * 3),
           //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
           anchor: Anchor.center,
@@ -232,6 +240,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
     opacityPaint = Paint()..color = Colors.white.withOpacity(penalizationPercentage);
 
+
+
     startHome();
 
     //startGame();
@@ -240,13 +250,15 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
   void startHome() {
     playHomeBGM();
     penalizedEyeIsSet = false;
-    logo = TextComponent("ARKANOID",
+    logo = TextComponent(
+        text: "ARKANOID",
       position: Vector2(screen.x/2,screen.y/4),
       //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
       anchor: Anchor.center,
       textRenderer: getPainter(30));
     add(logo);
-    textBox = TextComponent("SELECT DIFFICULTY",
+    textBox = TextComponent(
+        text: "SELECT DIFFICULTY",
         position: Vector2(screen.x/2,screen.y/2 - tileSize.y * 2),
         //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
         anchor: Anchor.center,
@@ -275,7 +287,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
   void selectEye() {
     textBox = TextComponent(
-      "SCEGLI L'OCCHIO\n\nAMBLIOPICO",
+      text: "SCEGLI L'OCCHIO\n\nAMBLIOPICO",
       textRenderer: getPainter(15), position: Vector2(screen.x/2,screen.y/3),
       /*boxConfig: TextBoxConfig(
         maxWidth: playScreenSize.x*9/10,
@@ -520,7 +532,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     //FlameAudio.bgm.audioCache.play('bgm/KL Peach Game Over 2.mp3');
     playGameOverBGM();
     textBox = TextComponent(
-      "GAME OVER",
+      text: "GAME OVER",
       textRenderer: getPainter(30),
       position: Vector2(screen.x/2,screen.y/3),
       /*boxConfig: TextBoxConfig(
@@ -581,7 +593,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
 
     if(level < levels.length-1) {
       textBox = TextComponent(
-        "LEVEL\nCOMPLETED",
+        text: "LEVEL\nCOMPLETED",
         textRenderer: getPainter(30),
         position: Vector2(screen.x / 2, screen.y / 3),
         /*boxConfig: TextBoxConfig(
@@ -596,7 +608,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappableComponents,
     else {
       removeLives();
       textBox = TextComponent(
-        "GAME\nCOMPLETED",
+        text: "GAME\nCOMPLETED",
         textRenderer: getPainter(30),
         position: Vector2(screen.x / 2, screen.y / 3),
         /*boxConfig: TextBoxConfig(

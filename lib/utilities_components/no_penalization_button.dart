@@ -7,7 +7,7 @@ class NoPenalizationButton extends TextComponent with Tappable {
 
 
   NoPenalizationButton(this.game) : super (
-    "PLAY WITHOUT\n\nPENALIZATION",
+    text: "PLAY WITHOUT\n\nPENALIZATION",
     position: Vector2(game.screen.x/2, game.playScreenPosition.y + game.playScreenSize.y - game.tileSize.y * 4),
     //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
     textRenderer: game.getPainter(8),

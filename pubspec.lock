@@ -88,12 +88,10 @@ packages:
   flame:
     dependency: "direct main"
     description:
-      path: "packages/flame"
-      ref: main
-      resolved-ref: "69d9e5aa6b279253e2159be8449835e891140c5f"
-      url: "https://github.com/flame-engine/flame.git"
-    source: git
-    version: "1.0.0-releasecandidate.16"
+      name: flame
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0-releasecandidate.17"
   flame_audio:
     dependency: "direct main"
     description:
@@ -106,6 +104,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_bluetooth_serial:
+    dependency: "direct main"
+    description:
+      name: flutter_bluetooth_serial
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -178,7 +183,7 @@ packages:
       name: ordered_set
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.0"
+    version: "5.0.0"
   path:
     dependency: transitive
     description:

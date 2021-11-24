@@ -6,7 +6,7 @@ class NextLevelButton extends TextComponent with Tappable {
   final ArkanoidGame game;
 
   NextLevelButton(this.game) : super (
-    "NEXT",
+    text: "NEXT",
     position: Vector2(game.screen.x/2,game.screen.y*2/3),
     //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
     textRenderer: game.getPainter(20),

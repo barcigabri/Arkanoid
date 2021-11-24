@@ -8,7 +8,7 @@ class EyeButton extends TextComponent with Tappable {
 
 
   EyeButton(this.game, this.isLeft) : super (
-    "LEFT",
+    text: "LEFT",
     position: Vector2(game.playScreenPosition.x + game.playScreenSize.x / 4, game.screen.y * 3 / 5),
     //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
     textRenderer: game.getPainter(15),
