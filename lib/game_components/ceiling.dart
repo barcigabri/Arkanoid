@@ -36,10 +36,7 @@ class Ceiling extends PositionComponent with HasHitboxes, Collidable {
 
   void ballCollision(Ball ball, Set<Vector2> points) {
     ball.lock = false;
-    if(!isLast) {
-      game.wallLeft.isLast = false;
-      game.wallRight.isLast = false;
-      isLast = true;
+    if(ball.lastCollision != this) {
       ball.velocity = Vector2(ball.velocity.x, -ball.velocity.y);
     }
     ball.position.y+=2;

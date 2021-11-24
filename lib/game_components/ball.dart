@@ -26,6 +26,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
   bool megaBonus = false; // se la pallina attraversa i blocchi
   late double difference;
   double angle;
+  late Collidable lastCollision;
 
 
 
@@ -68,6 +69,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
   @override
   void onCollision(Set<Vector2> points, Collidable other) {
     // Bisogna usare tutta una serie di if in modo che other sia di una classe ben definita
+    lastCollision = other;
     if (other is Wall) {
       other.ballCollision(this, points);
     }

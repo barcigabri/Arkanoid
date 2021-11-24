@@ -46,11 +46,7 @@ class Wall extends PositionComponent with HasHitboxes, Collidable {
       else {
         ball.position.x += 2;
       }*/
-      if (!isLast) {
-        game.wallLeft.isLast = false;
-        game.wallRight.isLast = false;
-        game.ceiling.isLast = false;
-        isLast = true;
+      if (ball.lastCollision != this) {
         ball.velocity = Vector2(-ball.velocity.x, ball.velocity.y);
       }
     }
