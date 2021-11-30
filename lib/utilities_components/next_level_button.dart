@@ -1,6 +1,7 @@
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
+import 'package:flutter/services.dart';
 
 class NextLevelButton extends TextComponent with Tappable {
   final ArkanoidGame game;
@@ -22,11 +23,8 @@ class NextLevelButton extends TextComponent with Tappable {
 
   @override
   bool onTapUp(TapUpInfo event) {
-    //game.lockOnTapUp = true;
-    textRenderer = game.getPainter(20);
-    game.removeLevel();
-    game.level++;
-    game.nextLevel();
+
+    tapped();
     return true;
   }
 
@@ -34,5 +32,24 @@ class NextLevelButton extends TextComponent with Tappable {
   bool onTapCancel() {
     textRenderer = game.getPainter(20);
     return true;
+  }
+
+  void tapped() {
+    //game.lockOnTapUp = true;
+    textRenderer = game.getPainter(20);
+    game.removeLevel();
+    game.level++;
+    game.nextLevel();
+  }
+
+  void keyboardAction(RawKeyEvent event) {
+    if(event.logicalKey == LogicalKeyboardKey.gameButtonA || event.logicalKey == LogicalKeyboardKey.gameButtonStart) {
+      if (event is RawKeyDownEvent) {
+        textRenderer = game.getPainter(30);
+      }
+      if (event is RawKeyUpEvent) {
+        tapped();
+      }
+    }
   }
 }

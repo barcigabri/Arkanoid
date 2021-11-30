@@ -1,6 +1,7 @@
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
+import 'package:flutter/services.dart';
 
 class HomeButton extends TextComponent with Tappable {
   final ArkanoidGame game;
@@ -24,9 +25,7 @@ class HomeButton extends TextComponent with Tappable {
 
   @override
   bool onTapUp(TapUpInfo event) {
-    textRenderer = game.getPainter(20);
-    game.removeLostScreen();
-    game.startHome();
+    tapped();
     return true;
   }
 
@@ -34,6 +33,23 @@ class HomeButton extends TextComponent with Tappable {
   bool onTapCancel() {
     textRenderer = game.getPainter(20);
     return true;
+  }
+
+  void tapped() {
+    textRenderer = game.getPainter(20);
+    game.removeLostScreen();
+    game.startHome();
+  }
+
+  void keyboardAction(RawKeyEvent event) {
+    if(event.logicalKey == LogicalKeyboardKey.gameButtonA || event.logicalKey == LogicalKeyboardKey.gameButtonStart) {
+      if (event is RawKeyDownEvent) {
+        textRenderer = game.getPainter(30);
+      }
+      if (event is RawKeyUpEvent) {
+        tapped();
+      }
+    }
   }
 
 }

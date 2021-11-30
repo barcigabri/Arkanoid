@@ -18,7 +18,6 @@ import 'package:arkanoid/level_components/level2.dart';
 import 'package:arkanoid/level_components/level3.dart';
 import 'package:arkanoid/level_components/level4.dart';
 import 'package:arkanoid/level_components/level5.dart';
-import 'package:arkanoid/utilities_components/bluetooth_connection.dart';
 import 'package:arkanoid/utilities_components/eye_button.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
 import 'package:arkanoid/utilities_components/home_button.dart';
@@ -40,9 +39,10 @@ import 'package:flame/sprite.dart';
 import 'package:flame_audio/audio_pool.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ocarina/ocarina.dart';
 
-class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDraggables {
+class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDraggables, KeyboardEvents {
   View activeView = View.home;
   late Vector2 screen;
   bool init = false;
@@ -126,7 +126,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late final SelectorDifficulty selectorDifficulty;
   late final SelectorEye selectorEye;
   late PlayButton playButton;
-  late BluetoothConnection bluetooth;
+  late KeyboardListener listen;
+  //late BluetoothConn bluetooth;
 
 
   @override
@@ -240,14 +241,19 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
     opacityPaint = Paint()..color = Colors.white.withOpacity(penalizationPercentage);
 
+    // bluetooth = BluetoothConn();
 
+    // listen = KeyboardListener();
 
     startHome();
 
     //startGame();
   }
 
+
+
   void startHome() {
+    activeView = View.home;
     playHomeBGM();
     penalizedEyeIsSet = false;
     logo = TextComponent(
@@ -286,6 +292,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   }
 
   void selectEye() {
+    activeView = View.selectEye;
     textBox = TextComponent(
       text: "SCEGLI L'OCCHIO\n\nAMBLIOPICO",
       textRenderer: getPainter(15), position: Vector2(screen.x/2,screen.y/3),
@@ -332,6 +339,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   }
 
   void startGame() {
+    activeView = View.play;
     lives = 2;
     bonusList = <Bonus>[];
     livesList = <Life>[];
@@ -529,6 +537,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   }
 
   void lostScreen() {
+    activeView = View.lost;
     //FlameAudio.bgm.audioCache.play('bgm/KL Peach Game Over 2.mp3');
     playGameOverBGM();
     textBox = TextComponent(
@@ -591,7 +600,9 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   void levelCompleted() {
     removeComponents();
 
+
     if(level < levels.length-1) {
+      activeView = View.levelComplete;
       textBox = TextComponent(
         text: "LEVEL\nCOMPLETED",
         textRenderer: getPainter(30),
@@ -607,6 +618,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     }
     else {
       removeLives();
+      activeView = View.gameComplete;
       textBox = TextComponent(
         text: "GAME\nCOMPLETED",
         textRenderer: getPainter(30),
@@ -668,6 +680,63 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     //paddleAnimation =
 
   }
+
+  @override
+  KeyEventResult onKeyEvent(
+      RawKeyEvent event,
+      Set<LogicalKeyboardKey> keysPressed,
+      ) {
+    final isKeyDown = event is RawKeyDownEvent;
+    switch (activeView) {
+
+      case View.levelComplete:
+        nextLevelButton.keyboardAction(event);
+        break;
+
+      case View.lost:
+        homeButton.keyboardAction(event);
+        break;
+
+      case View.play:
+
+        break;
+
+      case View.selectEye:
+        if(event is RawKeyDownEvent) {
+          selectorEye.keyboardAction(event);
+        }
+        playButton.keyboardAction(event);
+        break;
+
+      case View.gameComplete:
+        homeButton.keyboardAction(event);
+        break;
+
+      case View.home:
+        if(event is RawKeyDownEvent) {
+          selectorDifficulty.keyboardAction(event);
+        }
+        startButton.keyboardAction(event);
+        break;
+
+    }
+    print(event);
+
+    if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      print('sinistra!');
+    } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      print('destra!');
+    }/* else if (event.logicalKey == LogicalKeyboardKey.keyW) {
+      velocity.y = isKeyDown ? -1 : 0;
+    } else if (event.logicalKey == LogicalKeyboardKey.keyS) {
+      velocity.y = isKeyDown ? 1 : 0;
+    }*/
+
+    return super.onKeyEvent(event, keysPressed);
+  }
+
+
+
 
   TextPaint getPainter(double fSize) {
     // mio: 417.8181818181818,392.72727272727275

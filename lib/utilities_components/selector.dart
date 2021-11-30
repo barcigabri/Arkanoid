@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
+import 'package:flutter/services.dart';
 
 abstract class Selector extends PositionComponent with Draggable {
   final Paint white = Paint()..color = const Color(0xffffffff);
@@ -64,5 +65,19 @@ abstract class Selector extends PositionComponent with Draggable {
   }
 
   void updateVariable(int value);
+
+  void keyboardAction(RawKeyEvent event) {
+    if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+      if(position.x != rightBound) {
+        position.x += (rightBound - leftBound)/2;
+      }
+    }
+    else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+      if(position.x != leftBound) {
+        position.x -= (rightBound - leftBound)/2;
+      }
+    }
+    calcolaPosizione();
+  }
 
 }

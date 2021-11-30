@@ -43,8 +43,8 @@ void main() async {
 
   //sleep(Duration(seconds: 2));
   runApp(
-    GameWidget(
-      game: game,
-    ),
+      GameWidget(
+        game: game,
+      )
   );
 }

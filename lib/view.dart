@@ -1,8 +1,8 @@
 enum View {
   home,
-  playing,
+  selectEye,
+  play,
   levelComplete,
-  lost,
-  help,
-  credits,
+  gameComplete,
+  lost
 }
