@@ -681,6 +681,15 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   }
 
+  //
+  //
+  //
+  //
+  // CAPIRE SE POSSO FARE QUALCOSA PER IL LAG
+  //
+  //
+  //
+  //
   @override
   KeyEventResult onKeyEvent(
       RawKeyEvent event,
@@ -698,7 +707,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
         break;
 
       case View.play:
-
+        paddle.keyboardAction(event);
         break;
 
       case View.selectEye:
@@ -720,13 +729,13 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
         break;
 
     }
-    print(event);
+    /*print(event);
 
     if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
       print('sinistra!');
     } else if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
       print('destra!');
-    }/* else if (event.logicalKey == LogicalKeyboardKey.keyW) {
+    } else if (event.logicalKey == LogicalKeyboardKey.keyW) {
       velocity.y = isKeyDown ? -1 : 0;
     } else if (event.logicalKey == LogicalKeyboardKey.keyS) {
       velocity.y = isKeyDown ? 1 : 0;
@@ -734,6 +743,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
     return super.onKeyEvent(event, keysPressed);
   }
+
+
 
 
 

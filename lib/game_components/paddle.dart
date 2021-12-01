@@ -6,6 +6,7 @@ import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
@@ -13,6 +14,8 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
   late Rect wallRect;
   late HitboxRectangle shape;
   late double xPaddle;
+  Vector2 velocity = Vector2.zero();
+  double speed = 150;
 
   Paddle(this.game) : super (
       position: Vector2(game.screen.x/2,(game.screen.y-game.playScreenSize.y)/2+game.playScreenSize.y-game.tileSize.y*2),
@@ -26,6 +29,9 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
     // aggiungo le hitbox
     shape = HitboxRectangle();
     addHitbox(shape);
+
+    double moltiplicatore = speed / 353.53846153846155;
+    speed = game.playScreenSize.y * moltiplicatore;
 
     xPaddle = game.screen.x/2;
   }
@@ -69,10 +75,13 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
     //Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y)
   }
 
-  void update(double t) {
-    super.update(t);
+  @override
+  void update(double dt) {
+    super.update(dt);
     if(xPaddle <= game.screen.x-game.screen.x/6-size.x/2 && xPaddle >= game.screen.x/6+size.x/2) {
+      xPaddle += (velocity.x * dt);
       position.x = xPaddle;
+
     }
     else if(xPaddle > game.screen.x-game.screen.x/6-size.x/2) {
       position.x = game.screen.x-game.screen.x/6-size.x/2;
@@ -82,5 +91,29 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
       position.x = game.screen.x/6+size.x/2;
       xPaddle = position.x;
     }
+  }
+
+  void keyboardAction(RawKeyEvent event) {
+      if (event is RawKeyDownEvent) {
+        if(event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+          velocity = Vector2(-1,0)..scaleTo(speed);
+        }
+        if(event.logicalKey == LogicalKeyboardKey.arrowRight) {
+          velocity = Vector2(1,0)..scaleTo(speed);
+        }
+      }
+      if (event is RawKeyUpEvent) {
+        if(event.logicalKey == LogicalKeyboardKey.gameButtonA) {
+          game.balls.first.freeze = false;
+          game.balls.first.movementOnOff(true);
+        }
+        if(event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+          velocity = Vector2.zero();
+        }
+        if(event.logicalKey == LogicalKeyboardKey.arrowRight) {
+          velocity = Vector2.zero();
+        }
+      }
+
   }
 }

@@ -8,7 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
 
-class Laser extends SpriteComponent with HasHitboxes, Collidable {
+class Laser extends PositionComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   double speed = 375;
