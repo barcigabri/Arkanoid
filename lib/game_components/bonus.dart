@@ -35,12 +35,18 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
     velocity = Vector2(0,1)..scaleTo(speed);
 
     //print(game.bonusOnScreen);
-
-
+    /*
+    Set<BonusType> available = BonusType.values.toSet();
+    available.removeAll(game.bonusOnScreen);
+    available.remove(BonusType.normal);
+    do { // scelgo il tipo di bonus
+    type = BonusType.values.elementAt(game.rnd.nextInt(available.length));
+    } while (type == BonusType.player && game.rnd.nextDouble() > 0.6); // Ho solo il 60% di possibilità di guadagnare una vita quando esce il bonus corrispondente
+    */
     do { // scelgo il tipo di bonus
       type = BonusType.values.elementAt(game.rnd.nextInt(BonusType.values.length - 1));
-      print(type);
     } while (game.bonusOnScreen.contains(type) || type == game.activeType || (type == BonusType.player && game.rnd.nextDouble() > 0.6)); // Ho solo il 60% di possibilità di guadagnare una vita quando esce il bonus corrispondente
+
     game.bonusOnScreen.add(type);
     assignSprite();
   }
@@ -51,7 +57,9 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
     if (other is Paddle) {
       game.bonusOnScreen.remove(type);
       game.remove(this);
-      game.activeType = type;
+      if(game.activeType != BonusType.player) {
+        game.activeType = type;
+      }
       switch(type) {
         case BonusType.disruption:
           game.multiplyBall();

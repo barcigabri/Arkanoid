@@ -23,6 +23,7 @@ abstract class Level {
     game.levelPosition = <Vector3>[];
     game.blocks = <Block>[];
     game.balls = <Ball>[];
+    game.paddleCreateNormalAnimation.reset();
     game.paddle = Paddle(game);
     game.add(game.paddle);
     game.lpl = LateralPaddle(game, game.paddle, 0);

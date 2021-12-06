@@ -44,7 +44,8 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
     anchor: Anchor.center,
   ) {
 
-    speed = 100 + game.selectorDifficulty.difficulty * 100;
+    speed = 150 + game.selectorDifficulty.difficulty * 50;
+    print(speed);
 
     double moltiplicatore = speed / 353.53846153846155;
     speed = game.playScreenSize.y * moltiplicatore;
@@ -112,15 +113,15 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
       position.x = game.paddle.xPaddle - difference;
       position.y = game.paddle.position.y-size.x/2;
     }
+
     //Prova per non far scomparire la pallina
     if(dt > 0.07) {
       dt = 0;
     }
     double scaleMultiplier = 1;
 
-    if (velocity.x * dt > game.tileSize.x / 3 - 1) scaleMultiplier = (game.tileSize.x / 3 - 1) / (velocity.x * dt);
-    if (velocity.y * dt > game.tileSize.x / 3 - 1) scaleMultiplier = (game.tileSize.x / 3 - 1) / (velocity.y * dt);
-
+    if (velocity.x.abs() * dt > game.tileSize.x / 3 - 1) scaleMultiplier = (game.tileSize.x / 3 - 1) / (velocity.x.abs() * dt);
+    if (velocity.y.abs() * dt > game.tileSize.x / 3 - 1) scaleMultiplier = (game.tileSize.x / 3 - 1) / (velocity.y.abs() * dt);
     position.add((velocity * dt).scaled(scaleMultiplier));
 
     if(position.x < game.playScreenPosition.x) {

@@ -57,8 +57,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late Vector2 playScreenPosition;
   late Vector2 playScreenSize;
   late List<b.Block> blocks;
-  late List<Bonus> bonusList;
-  late List<BonusType> bonusOnScreen;
+  late Set<Bonus> bonusList;
+  late Set<BonusType> bonusOnScreen;
   final double bonusPerc = 0.15;
   late List<Life> livesList;
   late GestureInvisibleScreen gesturesComponent;
@@ -88,7 +88,11 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late final SpriteAnimation lasers;
   late final SpriteAnimation player;
 
-  late final SpriteAnimation paddleAnimation;
+  late final SpriteAnimation paddleNormalAnimation;
+  late final SpriteAnimation paddleCreateNormalAnimation;
+  late final SpriteAnimation paddleLaserAnimation;
+  late final SpriteAnimation paddleCreateLaserAnimation;
+  late final SpriteAnimation paddleExtendedAnimation;
 
 
   double penalizationPercentage = 0.5;
@@ -126,8 +130,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late final SelectorDifficulty selectorDifficulty;
   late final SelectorEye selectorEye;
   late PlayButton playButton;
-  late KeyboardListener listen;
-  //late BluetoothConn bluetooth;
+
+  late Set<LogicalKeyboardKey> keys = {};
 
 
   @override
@@ -241,10 +245,6 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
     opacityPaint = Paint()..color = Colors.white.withOpacity(penalizationPercentage);
 
-    // bluetooth = BluetoothConn();
-
-    // listen = KeyboardListener();
-
     startHome();
 
     //startGame();
@@ -254,6 +254,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   void startHome() {
     activeView = View.home;
+    keys = {};
     playHomeBGM();
     penalizedEyeIsSet = false;
     logo = TextComponent(
@@ -340,14 +341,15 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   void startGame() {
     activeView = View.play;
+    keys = {};
     lives = 2;
-    bonusList = <Bonus>[];
+    bonusList = <Bonus>{};
     livesList = <Life>[];
     for(int i=0; i<lives; i++) {
       livesList.add(Life(this,i));
       add(livesList.elementAt(i));
     }
-    bonusOnScreen = <BonusType>[];
+    bonusOnScreen = <BonusType>{};
     nextLevel();
   }
 
@@ -453,6 +455,9 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   void laser() {
     resetBonus();
+    paddleCreateLaserAnimation.reset();
+    paddle.animation = paddleLaserAnimation;
+    paddle.animation?.reset();
     laserTimer = 0;
   }
 
@@ -593,8 +598,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   void removeBonuses() {
     activeType = BonusType.normal;
     removeAll(bonusList);
-    bonusList = <Bonus>[];
-    bonusOnScreen = <BonusType>[];
+    bonusList = <Bonus>{};
+    bonusOnScreen = <BonusType>{};
   }
 
   void levelCompleted() {
@@ -648,6 +653,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
 
   void nextLevel() {
+    keys = {}; // Resetto la lista di keys attive
+    activeView = View.play;
     gesturesComponent = GestureInvisibleScreen(this);
     add(gesturesComponent);
     currentLevel = levels.elementAt(level);
@@ -661,7 +668,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   }
 
   void loadAnimations() {
-    final spriteSheet = SpriteSheet(
+    final SpriteSheet spriteSheet = SpriteSheet(
         image: Flame.images.fromCache('powerUp/powerups.png'),
         srcSize: Vector2(16.0, 8.0),
     );
@@ -673,11 +680,41 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     freeze = spriteSheet.createAnimation(row: 1, stepTime: animationSpeed);
     player = spriteSheet.createAnimation(row: 6, stepTime: animationSpeed);
 
-    final paddleSheet = SpriteSheet(
-        image: Flame.images.fromCache('components/paddle.png'),
-        srcSize: Vector2(16.0, 8.0),
+    SpriteSheet paddleSheet = SpriteSheet(
+      image: Flame.images.fromCache('components/paddle_create.png'),
+      srcSize: Vector2(32.0, 8.0),
     );
-    //paddleAnimation =
+    paddleCreateNormalAnimation = paddleSheet.createAnimation(row: 0, loop: false, stepTime: animationSpeed);
+    paddleCreateNormalAnimation.onComplete = () {
+      paddle.animation = paddleNormalAnimation;
+    };
+
+    paddleSheet = SpriteSheet(
+      image: Flame.images.fromCache('components/paddle_normal.png'),
+      srcSize: Vector2(32.0, 8.0),
+    );
+    paddleNormalAnimation = paddleSheet.createAnimation(row: 0, stepTime: animationSpeed);
+
+    paddleSheet = SpriteSheet(
+      image: Flame.images.fromCache('components/paddle_create_laser.png'),
+      srcSize: Vector2(32.0, 8.0),
+    );
+    paddleCreateLaserAnimation = paddleSheet.createAnimation(row: 0, loop: false, stepTime: animationSpeed);
+    paddleCreateLaserAnimation.onComplete = () {
+      paddle.animation = paddleLaserAnimation;
+    };
+
+    paddleSheet = SpriteSheet(
+      image: Flame.images.fromCache('components/paddle_laser.png'),
+      srcSize: Vector2(32.0, 8.0),
+    );
+    paddleLaserAnimation = paddleSheet.createAnimation(row: 0, stepTime: animationSpeed);
+
+    paddleSheet = SpriteSheet(
+      image: Flame.images.fromCache('components/paddle_extended.png'),
+      srcSize: Vector2(32.0, 8.0),
+    );
+    paddleExtendedAnimation = paddleSheet.createAnimation(row: 0, stepTime: animationSpeed);
 
   }
 
@@ -685,7 +722,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   //
   //
   //
-  // CAPIRE SE POSSO FARE QUALCOSA PER IL LAG
+  // CAPIRE SE POSSO FARE QUALCOSA PER IL LAG (Con usb lagga, tastiera bluetooth no)
   //
   //
   //
@@ -695,7 +732,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
       RawKeyEvent event,
       Set<LogicalKeyboardKey> keysPressed,
       ) {
-    final isKeyDown = event is RawKeyDownEvent;
+    if (event is RawKeyDownEvent && keys.contains(event.logicalKey)) return super.onKeyEvent(event, keysPressed);
     switch (activeView) {
 
       case View.levelComplete:

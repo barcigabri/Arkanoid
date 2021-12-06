@@ -25,7 +25,11 @@ void main() async {
     'powerUp/m.png',
     'powerUp/l.png',
     'components/life.png',
-    'components/paddle.png',
+    'components/paddle_normal.png',
+    'components/paddle_create.png',
+    'components/paddle_laser.png',
+    'components/paddle_create_laser.png',
+    'components/paddle_extended.png',
     'powerUp/powerups.png'
   ]);
 

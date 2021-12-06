@@ -15,12 +15,13 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
   late HitboxRectangle shape;
   late double xPaddle;
   Vector2 velocity = Vector2.zero();
-  double speed = 150;
+  double speed = 200;
 
   Paddle(this.game) : super (
       position: Vector2(game.screen.x/2,(game.screen.y-game.playScreenSize.y)/2+game.playScreenSize.y-game.tileSize.y*2),
       size: Vector2(game.tileSize.x*2,1),
-      anchor: Anchor.center
+      anchor: Anchor.topCenter,
+      animation: game.paddleCreateNormalAnimation
   ) {
 
     collidableType = CollidableType.passive;
@@ -29,6 +30,7 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
     // aggiungo le hitbox
     shape = HitboxRectangle();
     addHitbox(shape);
+    size.y = size.x / 4; // sistemare dimensioni!!
 
     double moltiplicatore = speed / 353.53846153846155;
     speed = game.playScreenSize.y * moltiplicatore;
@@ -61,9 +63,9 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
     Paint boxPaint = Paint();
     boxPaint.color = Color(0xFFFFFFFF);
     /*canvas.drawLine(Offset(0,0), Offset(game.screen.x,game.screen.y), boxPaint);*/
-    debugColor = Colors.white;
+   // debugColor = Colors.white;
     super.render(canvas);
-    renderHitboxes(canvas, paint:boxPaint);
+    //renderHitboxes(canvas, paint:boxPaint);
     //canvas.drawRect(wallRect, boxPaint);
 
     //print(wallRect);
@@ -80,8 +82,15 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
     super.update(dt);
     if(xPaddle <= game.screen.x-game.screen.x/6-size.x/2 && xPaddle >= game.screen.x/6+size.x/2) {
       xPaddle += (velocity.x * dt);
+      if(xPaddle > game.screen.x-game.screen.x/6-size.x/2) {
+        position.x = game.screen.x-game.screen.x/6-size.x/2;
+        xPaddle = position.x;
+      }
+      if(xPaddle < game.screen.x/6+size.x/2) {
+        position.x = game.screen.x/6+size.x/2;
+        xPaddle = position.x;
+      }
       position.x = xPaddle;
-
     }
     else if(xPaddle > game.screen.x-game.screen.x/6-size.x/2) {
       position.x = game.screen.x-game.screen.x/6-size.x/2;
@@ -94,7 +103,8 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
   }
 
   void keyboardAction(RawKeyEvent event) {
-      if (event is RawKeyDownEvent) {
+      if (event is RawKeyDownEvent && !game.keys.contains(event.logicalKey)) {
+        game.keys.add(event.logicalKey);
         if(event.logicalKey == LogicalKeyboardKey.arrowLeft) {
           velocity = Vector2(-1,0)..scaleTo(speed);
         }
@@ -103,6 +113,7 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
         }
       }
       if (event is RawKeyUpEvent) {
+        game.keys.remove(event.logicalKey);
         if(event.logicalKey == LogicalKeyboardKey.gameButtonA) {
           game.balls.first.freeze = false;
           game.balls.first.movementOnOff(true);
