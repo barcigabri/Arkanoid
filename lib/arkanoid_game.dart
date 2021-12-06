@@ -88,6 +88,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late final SpriteAnimation lasers;
   late final SpriteAnimation player;
 
+  late final SpriteSheet paddleSheetLaser;
   late final SpriteAnimation paddleNormalAnimation;
   late final SpriteAnimation paddleCreateNormalAnimation;
   late final SpriteAnimation paddleLaserAnimation;
@@ -455,8 +456,10 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   void laser() {
     resetBonus();
-    paddleCreateLaserAnimation.reset();
-    paddle.animation = paddleLaserAnimation;
+    paddle.animation = paddleSheetLaser.createAnimation(row: 0, loop: false, stepTime: animationSpeed);
+    paddle.animation?.onComplete = () {
+      paddle.animation = paddleLaserAnimation;
+    };
     paddle.animation?.reset();
     laserTimer = 0;
   }
@@ -695,14 +698,16 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     );
     paddleNormalAnimation = paddleSheet.createAnimation(row: 0, stepTime: animationSpeed);
 
-    paddleSheet = SpriteSheet(
+    paddleSheetLaser = SpriteSheet(
       image: Flame.images.fromCache('components/paddle_create_laser.png'),
       srcSize: Vector2(32.0, 8.0),
     );
+    /*
     paddleCreateLaserAnimation = paddleSheet.createAnimation(row: 0, loop: false, stepTime: animationSpeed);
     paddleCreateLaserAnimation.onComplete = () {
       paddle.animation = paddleLaserAnimation;
     };
+    */
 
     paddleSheet = SpriteSheet(
       image: Flame.images.fromCache('components/paddle_laser.png'),
