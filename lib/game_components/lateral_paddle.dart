@@ -48,11 +48,11 @@ class LateralPaddle extends PositionComponent with HasHitboxes, Collidable {
 
   void render(Canvas canvas) {
     Paint boxPaint = Paint();
-    boxPaint.color = Color(0xFFFF0000);
+    //boxPaint.color = Color(0xFFFF0000);
     /*canvas.drawLine(Offset(0,0), Offset(game.screen.x,game.screen.y), boxPaint);*/
-    debugColor = Colors.white;
+    //debugColor = Colors.white;
     super.render(canvas);
-    renderHitboxes(canvas, paint:boxPaint);
+    //renderHitboxes(canvas, paint:boxPaint);
     //canvas.drawRect(wallRect, boxPaint);
 
     //print(wallRect);

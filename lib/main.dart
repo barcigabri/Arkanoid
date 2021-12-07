@@ -30,6 +30,8 @@ void main() async {
     'components/paddle_laser.png',
     'components/paddle_create_laser.png',
     'components/paddle_extended.png',
+    'components/paddle_decompose.png',
+    'components/paddle_destruction.png',
     'powerUp/powerups.png'
   ]);
 

@@ -44,7 +44,7 @@ class BottomHole extends SpriteComponent with HasHitboxes, Collidable {
     game.balls.remove(ball);
     game.remove(ball);
     if (game.balls.isEmpty) {
-      game.lostLife();
+      game.lostLifeAnimation();
     }
   }
 

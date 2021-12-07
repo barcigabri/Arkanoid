@@ -24,12 +24,7 @@ abstract class Level {
     game.blocks = <Block>[];
     game.balls = <Ball>[];
     game.paddleCreateNormalAnimation.reset();
-    game.paddle = Paddle(game);
-    game.add(game.paddle);
-    game.lpl = LateralPaddle(game, game.paddle, 0);
-    game.add(game.lpl);
-    game.lpr = LateralPaddle(game, game.paddle, 1);
-    game.add(game.lpr);
+    game.createPaddle();
     game.resetBonus();
     game.paddle.restorePosition();
     game.balls.add(Ball(game, true));

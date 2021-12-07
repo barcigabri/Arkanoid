@@ -21,17 +21,19 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
       position: Vector2(game.screen.x/2,(game.screen.y-game.playScreenSize.y)/2+game.playScreenSize.y-game.tileSize.y*2),
       size: Vector2(game.tileSize.x*2,1),
       anchor: Anchor.topCenter,
-      animation: game.paddleCreateNormalAnimation
+      animation: game.paddleSheetCreate.createAnimation(row: 0, loop: false, stepTime: game.animationSpeed)
   ) {
-
     collidableType = CollidableType.passive;
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
 
     // aggiungo le hitbox
     shape = HitboxRectangle();
     addHitbox(shape);
-    size.y = size.x / 4; // sistemare dimensioni!!
+    size.y = size.x / 4; // sistemare dimensioni!! ( UPDATE: Credo di aver fatto)
 
+    animation?.onComplete = () {
+      animation = game.paddleNormalAnimation;
+    };
     double moltiplicatore = speed / 353.53846153846155;
     speed = game.playScreenSize.y * moltiplicatore;
 

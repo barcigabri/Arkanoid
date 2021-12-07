@@ -58,6 +58,12 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
       game.bonusOnScreen.remove(type);
       game.remove(this);
       if(type != BonusType.player) {
+        if(game.activeType == BonusType.laser) {
+          game.paddle.animation = game.paddleSheetLaser.createAnimation(row: 0, loop: false, stepTime: game.animationSpeed).reversed();
+          game.paddle.animation?.onComplete = () {
+            game.paddle.animation = game.paddleNormalAnimation;
+          };
+        }
         game.activeType = type;
       }
       switch(type) {

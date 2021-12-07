@@ -88,7 +88,10 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late final SpriteAnimation lasers;
   late final SpriteAnimation player;
 
+  late final SpriteSheet paddleSheetCreate;
   late final SpriteSheet paddleSheetLaser;
+  late final SpriteSheet paddleSheetDecompose;
+  late final SpriteSheet paddleSheetDestruction;
   late final SpriteAnimation paddleNormalAnimation;
   late final SpriteAnimation paddleCreateNormalAnimation;
   late final SpriteAnimation paddleLaserAnimation;
@@ -516,20 +519,40 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     }
   }
 
-  void lostLife() {
+  void lostLifeAnimation() {
+    /*
     paddle.xPaddle = screen.x/2; // Quando perde una vita rimetto il paddle al centro
     paddle.position.x = paddle.xPaddle;
+    */
+    lostLifeSound.start();
+    paddle.animation = paddleSheetDecompose.createAnimation(
+        row: 0, loop: false, stepTime: animationSpeed);
+    paddle.animation?.onComplete = () {
+      paddle.anchor = Anchor.center;
+      paddle.size.x = paddle.size.x * 3 / 2;
+      paddle.size.y = paddle.size.y * 3;
+
+      paddle.animation = paddleSheetDestruction.createAnimation(
+          row: 0, loop: false, stepTime: animationSpeed);
+      paddle.animation?.onComplete = () {
+        removePaddle();
+        lostLife();
+      };
+    };
+  }
+  void lostLife() {
     removeBonuses();
     lives--;
-    if(livesList.isEmpty) {
+
+    if (livesList.isEmpty) {
       lostGame();
     }
     else {
-      lostLifeSound.start();
+      createPaddle();
       remove(livesList.last);
       livesList.removeLast();
       resetBonus();
-      balls.add(Ball(this,true));
+      balls.add(Ball(this, true));
       add(balls.first);
     }
   }
@@ -591,6 +614,14 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     remove(paddle);
     remove(lpl);
     remove(lpr);
+  }
+  void createPaddle() {
+    paddle = Paddle(this);
+    add(paddle);
+    lpl = LateralPaddle(this, paddle, 0);
+    add(lpl);
+    lpr = LateralPaddle(this, paddle, 1);
+    add(lpr);
   }
 
   void removeBalls() {
@@ -683,16 +714,16 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     freeze = spriteSheet.createAnimation(row: 1, stepTime: animationSpeed);
     player = spriteSheet.createAnimation(row: 6, stepTime: animationSpeed);
 
-    SpriteSheet paddleSheet = SpriteSheet(
+    paddleSheetCreate = SpriteSheet(
       image: Flame.images.fromCache('components/paddle_create.png'),
       srcSize: Vector2(32.0, 8.0),
     );
-    paddleCreateNormalAnimation = paddleSheet.createAnimation(row: 0, loop: false, stepTime: animationSpeed);
+    paddleCreateNormalAnimation = paddleSheetCreate.createAnimation(row: 0, loop: false, stepTime: animationSpeed);
     paddleCreateNormalAnimation.onComplete = () {
       paddle.animation = paddleNormalAnimation;
     };
 
-    paddleSheet = SpriteSheet(
+    SpriteSheet paddleSheet = SpriteSheet(
       image: Flame.images.fromCache('components/paddle_normal.png'),
       srcSize: Vector2(32.0, 8.0),
     );
@@ -720,6 +751,15 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
       srcSize: Vector2(32.0, 8.0),
     );
     paddleExtendedAnimation = paddleSheet.createAnimation(row: 0, stepTime: animationSpeed);
+
+    paddleSheetDecompose = SpriteSheet(
+      image: Flame.images.fromCache('components/paddle_decompose.png'),
+      srcSize: Vector2(32.0, 8.0),
+    );
+    paddleSheetDestruction = SpriteSheet(
+      image: Flame.images.fromCache('components/paddle_destruction.png'),
+      srcSize: Vector2(48.0, 24.0),
+    );
 
   }
 
