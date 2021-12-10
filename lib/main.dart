@@ -18,6 +18,7 @@ void main() async {
     'background/spike.png',
     'background/penalization.png',
     'background/field.png',
+    'background/frame.png',
     'powerUp/d.png',
     'powerUp/e.png',
     'powerUp/f.png',
@@ -35,6 +36,10 @@ void main() async {
     'components/paddle_destruction.png',
     'components/blocks.png',
     'powerUp/powerups.png',
+    'shadows/block.png',
+    'shadows/paddle.png',
+    'shadows/bonus.png',
+    'shadows/blank.png',
   ]);
 
   /*await FlameAudio.audioCache.loadAll(<String>[

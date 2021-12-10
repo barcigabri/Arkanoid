@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:arkanoid/game_components/ball.dart';
 import 'package:flame/components.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,12 +17,15 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
   late double xPaddle;
   Vector2 velocity = Vector2.zero();
   double speed = 200;
+  final Sprite shadow = Sprite(Flame.images.fromCache('shadows/paddle.png'));
+  late Paint opacity;
 
   Paddle(this.game) : super (
       position: Vector2(game.screen.x/2,(game.screen.y-game.playScreenSize.y)/2+game.playScreenSize.y-game.tileSize.y*2),
       size: Vector2(game.tileSize.x*2,1),
       anchor: Anchor.topCenter,
-      animation: game.paddleSheetCreate.createAnimation(row: 0, loop: false, stepTime: game.animationSpeed)
+      animation: game.paddleSheetCreate.createAnimation(row: 0, loop: false, stepTime: game.animationSpeed),
+      priority: 1
   ) {
     collidableType = CollidableType.passive;
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
@@ -38,6 +42,7 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
     speed = game.playScreenSize.y * moltiplicatore;
 
     xPaddle = game.screen.x/2;
+    opacity = game.opacityPaint;
   }
 
   void ballCollision(Ball ball, Set<Vector2> points) {
@@ -61,22 +66,15 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
     position = Vector2(game.screen.x/2,(game.screen.y-game.playScreenSize.y)/2+game.playScreenSize.y-game.tileSize.y*2);
   }
 
+  void transparent() {
+    opacity = Paint()..color = Colors.white.withOpacity(0);
+  }
+
   void render(Canvas canvas) {
-    Paint boxPaint = Paint();
-    boxPaint.color = Color(0xFFFFFFFF);
-    /*canvas.drawLine(Offset(0,0), Offset(game.screen.x,game.screen.y), boxPaint);*/
-   // debugColor = Colors.white;
+    canvas.save();
+    shadow.renderRect(canvas, size.toRect().translate(game.pixel * 4, game.pixel * 4), overridePaint: opacity);
+    canvas.restore();
     super.render(canvas);
-    //renderHitboxes(canvas, paint:boxPaint);
-    //canvas.drawRect(wallRect, boxPaint);
-
-    //print(wallRect);
-    //bgSprite.renderRect(c, bgRect); // stampa sfondo immagine
-
-    //canvas.drawRect(Rect.fromLTWH(348.2, 0.0, game.screen.x/6, game.screen.y),boxPaint);
-    //print(Rect.fromLTWH(348.2, 0.0, game.screen.x/6, game.screen.y));
-    //print('348.2:${p.x} 0.0:${p.y} ${game.screen.x/6}:${s.x} ${game.screen.y}:${s.y}');
-    //Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y)
   }
 
   @override

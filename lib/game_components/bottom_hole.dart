@@ -18,7 +18,6 @@ class BottomHole extends SpriteComponent with HasHitboxes, Collidable {
       size: Vector2(game.screen.x*2/3, game.screen.y - (game.playScreenPosition.y+game.playScreenSize.y)),
       sprite: Sprite(Flame.images.fromCache('background/spike.png')/*,srcPosition: Vector2(0,0), srcSize: Vector2(20,20)*/)
   ) {
-
     collidableType = CollidableType.passive;
     addHitbox(HitboxRectangle());
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));

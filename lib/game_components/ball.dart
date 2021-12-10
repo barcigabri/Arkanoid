@@ -42,10 +42,10 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
     position: Vector2(game.paddle.position.x,game.paddle.position.y-game.tileSize.x/6),
     size: Vector2.all(game.tileSize.x/3),
     anchor: Anchor.center,
+    priority: 1
   ) {
 
     speed = 150 + game.selectorDifficulty.difficulty * 50;
-    print(speed);
 
     double moltiplicatore = speed / 353.53846153846155;
     speed = game.playScreenSize.y * moltiplicatore;

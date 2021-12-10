@@ -18,6 +18,7 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
   late HitboxRectangle shape;
   late Vector2 velocity;
   late BonusType type;
+  final Sprite shadow = Sprite(Flame.images.fromCache('shadows/bonus.png'));
 
 
   Bonus(this.game, Vector2 pos) : super (
@@ -34,7 +35,6 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
     debugColor = Color(0xFFFFFF00);
     velocity = Vector2(0,1)..scaleTo(speed);
 
-    //print(game.bonusOnScreen);
     /*
     Set<BonusType> available = BonusType.values.toSet();
     available.removeAll(game.bonusOnScreen);
@@ -99,9 +99,9 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
   }
 
   void render(Canvas canvas) {
-    Paint boxPaint = Paint();
-    boxPaint.color = Color(0xFFFFFF00);
-
+    canvas.save();
+    shadow.renderRect(canvas, size.toRect().translate(game.pixel * 4, game.pixel * 4), overridePaint: game.opacityPaint);
+    canvas.restore();
     super.render(canvas);
     //renderHitboxes(canvas);
     //canvas.drawRect(wallRect, boxPaint);

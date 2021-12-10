@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:arkanoid/game_components/ball.dart';
 import 'package:flame/components.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,6 +16,7 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
   late HitboxRectangle shape;
   Vector2 idPosizione;
   int lives;
+  final Sprite shadow = Sprite(Flame.images.fromCache('shadows/block.png'));
 
   Block(this.game, Vector2 pos, this.idPosizione, this.lives) : super (
       position: pos,
@@ -27,25 +29,15 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
     shape = HitboxRectangle();
     addHitbox(shape);
     //size.sub(Vector2.all(1));
+
   }
 
 
   void render(Canvas canvas) {
-    Paint boxPaint = Paint();
-    boxPaint.color = Color(0xFFFF0000);
-    //canvas.drawLine(Offset(0,0), Offset(game.screen.x,game.screen.y), boxPaint);
-
+    canvas.save();
+    shadow.renderRect(canvas, size.toRect().translate(game.pixel * 4, game.pixel * 4), overridePaint: game.opacityPaint);
+    canvas.restore();
     super.render(canvas);
-    // renderHitboxes(canvas /*, paint:boxPaint*/);
-    //canvas.drawRect(wallRect, boxPaint);
-
-    //print(wallRect);
-    //bgSprite.renderRect(c, bgRect); // stampa sfondo immagine
-
-    //canvas.drawRect(Rect.fromLTWH(348.2, 0.0, game.screen.x/6, game.screen.y),boxPaint);
-    //print(Rect.fromLTWH(348.2, 0.0, game.screen.x/6, game.screen.y));
-    //print('348.2:${p.x} 0.0:${p.y} ${game.screen.x/6}:${s.x} ${game.screen.y}:${s.y}');
-    //Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y)
   }
 
   @override
@@ -77,6 +69,9 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
     }
   }
 
+  //
+  // DEVO ATTIVARE ANIMAZIONE FERRO
+  //
   void ballCollision(Ball ball, Set<Vector2> points) {
     ball.lock = false;
     if (!ball.megaBonus) { // se è attivo trapasso i blocchi
@@ -215,6 +210,10 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
         }
         break;
       case 2:
+        animation = game.spriteSheetBlocks.createAnimation(row: 2, loop: false, stepTime: game.animationSpeed / 1.5);
+        animation?.onComplete = () {
+          animation = game.spriteSheetBlocks.createAnimation(row: 2, loop: false, stepTime: game.animationSpeed, to: 1);
+        };
         lives++;
         // FlameAudio.audioCache.play('sfx/bing.mp3', mode: PlayerMode.LOW_LATENCY);
         // game.steelSound.seek(Duration());

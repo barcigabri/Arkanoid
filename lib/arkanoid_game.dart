@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:arkanoid/bonus_type.dart';
 import 'package:arkanoid/game_components/bonus.dart';
 import 'package:arkanoid/game_components/bottom_hole.dart';
+import 'package:arkanoid/game_components/frame.dart';
 import 'package:arkanoid/game_components/laser.dart';
 import 'package:arkanoid/game_components/lateral_paddle.dart';
 import 'package:arkanoid/game_components/life.dart';
@@ -144,6 +145,10 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late Set<LogicalKeyboardKey> keys = {};
 
   late Background bg;
+  late Frame frame;
+
+
+  late double pixel; //logical dimension of a pixel
 
 
   @override
@@ -170,6 +175,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     tileSize = Vector2((screen.x*2/3)/13,(screen.x/3)/13);
     playScreenSize = Vector2(tileSize.x*13,tileSize.y*33);
     playScreenPosition = Vector2(screen.x/6,(screen.y-playScreenSize.y)/2);
+    pixel = tileSize.y / 7;
 
 
     wallLeft = Wall(this,Vector2.all(0),Vector2(screen.x/6,screen.y));
@@ -179,9 +185,9 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     wallRight = Wall(this,Vector2(screen.x-screen.x/6, 0),Vector2(screen.x/6,screen.y));
     add(wallRight);
     bottomHole = BottomHole(this);
-    add(bottomHole);
     vrLeft = Vr(this,1);
     vrRight = Vr(this,2);
+    frame = Frame(this);
 
     linePosition = Vector2(screen.x / 2 - playScreenSize.x * 3 / 8, screen.y / 2 + tileSize.y * 2);
     lineSize = Vector2(playScreenSize.x * 3 / 4, tileSize.y / 4);
@@ -242,7 +248,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // level = 4;
+     level = 2;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
@@ -542,6 +548,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     paddle.animation = paddleSheetDecompose.createAnimation(
         row: 0, loop: false, stepTime: animationSpeed);
     paddle.animation?.onComplete = () {
+      paddle.transparent();
       paddle.position.y += paddle.size.y / 2;
       paddle.anchor = Anchor.center;
       paddle.size.x = paddle.size.x * 3 / 2;
@@ -579,6 +586,9 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     removeBlocks();
     removeComponents();
     remove(gesturesComponent);
+    remove(bottomHole);
+    remove(bg);
+    remove(frame);
     level = 0;
     lostScreen();
     //startHome();
@@ -661,6 +671,9 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   void levelCompleted() {
     removeComponents();
     removeAll(livesList);
+    remove(bottomHole);
+    remove(bg);
+    remove(frame);
 
 
     if(level < levels.length-1) {
@@ -706,8 +719,6 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     remove(textBox);
     remove(nextLevelButton);
   }
-
-
 
   void nextLevel() {
     keys = {}; // Resetto la lista di keys attive
@@ -792,10 +803,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
     spriteSheetBg = SpriteSheet(
       image: Flame.images.fromCache('background/field.png'),
-      srcSize: Vector2(224.0, 240.0),
+      srcSize: Vector2(208.0, 232.0),
     );
-
-
   }
 
   //

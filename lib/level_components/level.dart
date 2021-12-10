@@ -25,6 +25,7 @@ abstract class Level {
     game.balls = <Ball>[];
     game.bg = Background(game, game.spriteSheetBg.getSpriteById(bgId));
     game.add(game.bg);
+    game.add(game.bottomHole);
     game.showLives();
     game.paddleCreateNormalAnimation.reset();
     game.createPaddle();
@@ -34,6 +35,7 @@ abstract class Level {
     game.add(game.balls.first);
     generateLevelPositions();
     addBlocks();
+    game.add(game.frame);
   }
 
 
