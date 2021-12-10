@@ -7,8 +7,9 @@ import 'package:flame/sprite.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flutter/material.dart';
+import 'package:flame/flame.dart';
 
-class Laser extends PositionComponent with HasHitboxes, Collidable {
+class Laser extends SpriteComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   double speed = 375;
@@ -20,8 +21,9 @@ class Laser extends PositionComponent with HasHitboxes, Collidable {
 
   Laser(this.game,this.isLeft) : super (
     position: game.paddle.position,
-    size: Vector2(game.tileSize.x/10,game.tileSize.y*4/5),
-    anchor:Anchor.center,
+    size: Vector2(game.tileSize.y*4/15,game.tileSize.y*4/5),
+    anchor: Anchor.center,
+    sprite: Sprite(Flame.images.fromCache('components/laser.png'))
   ) {
     double moltiplicatore = speed / 353.53846153846155;
     speed = game.playScreenSize.y * moltiplicatore;
@@ -31,11 +33,14 @@ class Laser extends PositionComponent with HasHitboxes, Collidable {
     }
     else {
       position.x += game.paddle.size.x / 2;
+      scale.x = -1;
     }
 
     // aggiungo le hitbox
     shape = HitboxRectangle();
     addHitbox(shape);
+    position.add(Vector2.all(game.tileSize.y*4/45));
+    size.add(Vector2.all(game.tileSize.y*2/15));
     debugColor = Color(0xFFFFFF00);
     velocity = Vector2(0,-1)..scaleTo(speed);
 
@@ -59,7 +64,7 @@ class Laser extends PositionComponent with HasHitboxes, Collidable {
     boxPaint.color = Color(0xFFFFFF00);
 
     super.render(canvas);
-    renderHitboxes(canvas);
+    //renderHitboxes(canvas);
     //canvas.drawRect(wallRect, boxPaint);
     //bgSprite.renderRect(c, bgRect); // stampa sfondo immagine
   }

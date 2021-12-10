@@ -1,7 +1,6 @@
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
-import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +17,7 @@ void main() async {
     'vr/cardboardview.png',
     'background/spike.png',
     'background/penalization.png',
+    'background/field.png',
     'powerUp/d.png',
     'powerUp/e.png',
     'powerUp/f.png',
@@ -28,11 +28,13 @@ void main() async {
     'components/paddle_normal.png',
     'components/paddle_create.png',
     'components/paddle_laser.png',
+    'components/laser.png',
     'components/paddle_create_laser.png',
     'components/paddle_extended.png',
     'components/paddle_decompose.png',
     'components/paddle_destruction.png',
-    'powerUp/powerups.png'
+    'components/blocks.png',
+    'powerUp/powerups.png',
   ]);
 
   /*await FlameAudio.audioCache.loadAll(<String>[

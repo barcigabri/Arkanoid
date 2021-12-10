@@ -1,14 +1,14 @@
 import 'package:arkanoid/arkanoid_game.dart';
 import 'package:arkanoid/game_components/ball.dart';
 import 'package:arkanoid/game_components/block.dart';
-import 'package:arkanoid/game_components/lateral_paddle.dart';
-import 'package:arkanoid/game_components/paddle.dart';
+import 'package:arkanoid/game_components/background.dart';
 import 'package:flame/game.dart';
 
 abstract class Level {
   final ArkanoidGame game;
+  final int bgId;
 
-  Level(this.game){
+  Level(this.game, this.bgId){
 
     //risolvere problemi inizializzazione paddle
 
@@ -23,6 +23,9 @@ abstract class Level {
     game.levelPosition = <Vector3>[];
     game.blocks = <Block>[];
     game.balls = <Ball>[];
+    game.bg = Background(game, game.spriteSheetBg.getSpriteById(bgId));
+    game.add(game.bg);
+    game.showLives();
     game.paddleCreateNormalAnimation.reset();
     game.createPaddle();
     game.resetBonus();
@@ -32,6 +35,8 @@ abstract class Level {
     generateLevelPositions();
     addBlocks();
   }
+
+
 
   /// internal function
   void addInPosition(double x, double y, double type) {

@@ -3,7 +3,7 @@ import 'package:arkanoid/level_components/level.dart';
 
 class Level5 extends Level{
 
-  Level5(ArkanoidGame game):super(game);
+  Level5(ArkanoidGame game):super(game, 4);
 
   @override
   void generateLevelPositions() {
