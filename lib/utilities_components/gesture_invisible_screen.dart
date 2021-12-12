@@ -24,6 +24,15 @@ class GestureInvisibleScreen extends PositionComponent with Tappable, comp.Dragg
   @override
   bool onDragUpdate(int pointerId, DragUpdateInfo info) {
     game.paddle.xPaddle = info.eventPosition.game.x;
+    if(game.paddle.xPaddle > game.screen.x-game.screen.x/6-game.paddle.size.x/2) {
+      game.paddle.xPaddle = game.screen.x-game.screen.x/6-game.paddle.size.x/2;
+      print(game.paddle.xPaddle);
+    }
+    if(game.paddle.xPaddle < game.screen.x/6+game.paddle.size.x/2) {
+      game.paddle.xPaddle = game.screen.x/6+game.paddle.size.x/2;
+    }
+
+
     return true;
   }
 

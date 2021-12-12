@@ -191,7 +191,7 @@ class Ball extends SpriteComponent with HasHitboxes, Collidable {
 
   void movementOnOff(bool movement) {
     if(movement) {
-      ballRotation(game.paddle.xPaddle - difference);
+      ballRotation(game.paddle.position.x - difference);
     }
     else {
       velocity = Vector2.zero();
