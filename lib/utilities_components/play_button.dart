@@ -51,7 +51,7 @@ class PlayButton extends TextComponent with Tappable {
   }
 
   void keyboardAction(RawKeyEvent event) {
-    if(event.logicalKey == LogicalKeyboardKey.gameButtonA || event.logicalKey == LogicalKeyboardKey.gameButtonStart) {
+    if(event.logicalKey == LogicalKeyboardKey.gameButtonA || event.logicalKey == LogicalKeyboardKey.gameButtonStart|| event.logicalKey == LogicalKeyboardKey.keyA) {
       if (event is RawKeyDownEvent) {
         textRenderer = game.getPainter(30);
       }

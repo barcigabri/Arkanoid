@@ -16,9 +16,11 @@ import 'package:arkanoid/game_components/block.dart' as b;
 import 'package:arkanoid/level_components/level.dart';
 import 'package:arkanoid/level_components/level1.dart';
 import 'package:arkanoid/level_components/level2.dart';
-import 'package:arkanoid/level_components/level3.dart';
 import 'package:arkanoid/level_components/level4.dart';
+import 'package:arkanoid/level_components/level3.dart';
+import 'package:arkanoid/level_components/level7.dart';
 import 'package:arkanoid/level_components/level5.dart';
+import 'package:arkanoid/level_components/level6.dart';
 import 'package:arkanoid/game_components/background.dart';
 import 'package:arkanoid/utilities_components/eye_button.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
@@ -59,7 +61,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late List<Vector3> levelPosition;
   late Vector2 playScreenPosition;
   late Vector2 playScreenSize;
-  late List<b.Block> blocks;
+  late Set<b.Block> blocks;
   late Set<Bonus> bonusList;
   late Set<BonusType> bonusOnScreen;
   final double bonusPerc = 0.15;
@@ -248,7 +250,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-     level = 2;
+    // level = 2;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
@@ -259,7 +261,9 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
       Level2(this),
       Level3(this),
       Level4(this),
-      Level5(this)
+      Level5(this),
+      Level6(this),
+      Level7(this)
     ];
 
     opacityPaint = Paint()..color = Colors.white.withOpacity(penalizationPercentage);
@@ -670,6 +674,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   void levelCompleted() {
     removeComponents();
+    removeBlocks();
     removeAll(livesList);
     remove(bottomHole);
     remove(bg);

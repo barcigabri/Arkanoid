@@ -7,21 +7,10 @@ class Level5 extends Level{
 
   @override
   void generateLevelPositions() {
-    // blocchi di destra
-    for (double y = 3; y < 8; y++) {
-      for (double x = 7; x < 16 - y ; x++) {
-        if(x == 7) {
-          addInPosition(x, y, 2);
-        }
-        else {
-          addInPosition(x, y, 1);
-        }
-      }
-    }
-    // blocchi di sinistra
-    for (double y = 13; y > 8; y--) {
-      for (double x = 5; x > y - 10; x--) {
-        if(x == 5) {
+    for (double y = 3; y < 16; y++) {
+      for (double x = 1; x < 12; x++) {
+        if (x == 4 || x == 8) x++;
+        if (y == 7 - x || y == 15 - x || y == 23 - x) {
           addInPosition(x, y, 2);
         }
         else {

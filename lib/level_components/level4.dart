@@ -7,10 +7,9 @@ class Level4 extends Level{
 
   @override
   void generateLevelPositions() {
-    for (double y = 3; y < 16; y++) {
-      for (double x = 1; x < 12; x++) {
-        if (x == 4 || x == 8) x++;
-        if (y == 7 - x || y == 15 - x || y == 23 - x) {
+    for (double y = 1; y < 14; y++) {
+      for (double x = 0; x < y; x++){
+        if(y == 13 && x != 12) {
           addInPosition(x, y, 2);
         }
         else {

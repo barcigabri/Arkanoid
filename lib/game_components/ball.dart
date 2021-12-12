@@ -8,12 +8,13 @@ import 'package:arkanoid/game_components/lateral_paddle.dart';
 import 'package:arkanoid/game_components/paddle.dart';
 import 'package:arkanoid/game_components/wall.dart';
 import 'package:flame/components.dart';
+import 'package:flame/flame.dart';
 import 'package:flame/game.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 
-class Ball extends PositionComponent with HasHitboxes, Collidable {
+class Ball extends SpriteComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late HitboxCircle shape;
   late Vector2 velocity;
@@ -27,6 +28,7 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
   late double difference;
   double angle;
   late Collidable lastCollision;
+  final Sprite shadow = Sprite(Flame.images.fromCache('shadows/ball.png'));
 
 
 
@@ -42,7 +44,8 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
     position: Vector2(game.paddle.position.x,game.paddle.position.y-game.tileSize.x/6),
     size: Vector2.all(game.tileSize.x/3),
     anchor: Anchor.center,
-    priority: 1
+    sprite: Sprite(Flame.images.fromCache('components/ball.png')),
+    priority: 2
   ) {
 
     speed = 150 + game.selectorDifficulty.difficulty * 50;
@@ -98,10 +101,11 @@ class Ball extends PositionComponent with HasHitboxes, Collidable {
 
   @override
   void render(Canvas canvas) {
+    canvas.save();
+    shadow.renderRect(canvas, size.toRect().translate(game.pixel * 4, game.pixel * 4), overridePaint: game.opacityPaint);
+    canvas.restore();
     super.render(canvas);
-    Paint a = Paint();
-    a.color = Color(0xFF00FF00);
-    renderHitboxes(canvas,paint: a);
+
     //canvas.drawCircle(position.toOffset(), size.x/2, a);
 
   }

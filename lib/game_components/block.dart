@@ -17,11 +17,12 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
   Vector2 idPosizione;
   int lives;
   final Sprite shadow = Sprite(Flame.images.fromCache('shadows/block.png'));
+  bool pause = false;
 
   Block(this.game, Vector2 pos, this.idPosizione, this.lives) : super (
       position: pos,
-      size: game
-          .tileSize, /*-Vector2.all(1)*/ // VALUTARE SE TENERE O MENO, PER ORA TENENDO TRAPASSO I BLOCCHI, MEGLIO DI NO
+      size: game.tileSize, /*-Vector2.all(1)*/ // VALUTARE SE TENERE O MENO, PER ORA TENENDO TRAPASSO I BLOCCHI, MEGLIO DI NO
+      priority: 1
   ) {
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
     collidableType = CollidableType.passive;
@@ -60,11 +61,11 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
         debugColor = Color(0xFFC0C0C0);
         animation = game.spriteSheetBlocks.createAnimation(row: 2, loop: false, stepTime: game.animationSpeed, to: 1);
         break;
-      case 3:
-        debugColor = Color(0xFFCD7F32);
-        break;
       case 4:
-        debugColor = Color(0xFFFFD700);
+        debugColor = Color(0xFFCD7F32);
+        if(!pause) {
+          animation = game.spriteSheetBlocks.createAnimation(row: 3, loop: false, stepTime: game.animationSpeed, to: 1);
+        }
         break;
     }
   }
@@ -74,7 +75,7 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
   //
   void ballCollision(Ball ball, Set<Vector2> points) {
     ball.lock = false;
-    if (!ball.megaBonus) { // se è attivo trapasso i blocchi
+    if (!ball.megaBonus || lives == 4) { // se è attivo trapasso i blocchi
       if (!((ball.previousBlock.x == idPosizione.x + 1 &&
           ball.previousBlock.y == idPosizione.y) ||
           (ball.previousBlock.x == idPosizione.x + -1 &&
@@ -202,7 +203,10 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
         // FlameAudio.audioCache.play('sfx/beeep.mp3', mode: PlayerMode.LOW_LATENCY);
         // game.blockSound.seek(Duration());
         // game.blockSound.play();
-        if (game.blocks.isEmpty) {
+        Set remaining;
+        remaining = game.blocks.toSet();
+        remaining.removeWhere((element) => element is Block && element.lives == 4);
+        if (remaining.isEmpty) {
           game.levelCompleted();
         }
         else {
@@ -218,6 +222,13 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
         // FlameAudio.audioCache.play('sfx/bing.mp3', mode: PlayerMode.LOW_LATENCY);
         // game.steelSound.seek(Duration());
         // game.steelSound.play();
+        break;
+      case 4:
+        animation = game.spriteSheetBlocks.createAnimation(row: 3, loop: false, stepTime: game.animationSpeed / 1.5);
+        pause = true;
+        animation?.onComplete = () {
+          pause = false;
+        };
         break;
     }
   }

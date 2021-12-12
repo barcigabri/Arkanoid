@@ -14,7 +14,7 @@ class Frame extends SpriteComponent{
     position: game.playScreenPosition,
     size: game.playScreenSize,
     sprite: Sprite(Flame.images.fromCache('background/frame.png')),
-    priority: 2
+    priority: 4
   ) {
     size.add(Vector2(game.playScreenSize.x/14, game.bottomHole.size.y));
     size.add(Vector2(0, size.y/30));

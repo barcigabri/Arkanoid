@@ -25,7 +25,7 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
       size: Vector2(game.tileSize.x*2,1),
       anchor: Anchor.topCenter,
       animation: game.paddleSheetCreate.createAnimation(row: 0, loop: false, stepTime: game.animationSpeed),
-      priority: 1
+      priority: 3
   ) {
     collidableType = CollidableType.passive;
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
@@ -114,7 +114,7 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
       }
       if (event is RawKeyUpEvent) {
         game.keys.remove(event.logicalKey);
-        if(event.logicalKey == LogicalKeyboardKey.gameButtonA) {
+        if(event.logicalKey == LogicalKeyboardKey.gameButtonA || event.logicalKey == LogicalKeyboardKey.keyA) {
           game.balls.first.freeze = false;
           game.balls.first.movementOnOff(true);
         }

@@ -21,7 +21,7 @@ abstract class Level {
   /// Create the level automatically
   void create() {
     game.levelPosition = <Vector3>[];
-    game.blocks = <Block>[];
+    game.blocks = <Block>{};
     game.balls = <Ball>[];
     game.bg = Background(game, game.spriteSheetBg.getSpriteById(bgId));
     game.add(game.bg);

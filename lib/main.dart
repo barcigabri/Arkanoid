@@ -35,11 +35,14 @@ void main() async {
     'components/paddle_decompose.png',
     'components/paddle_destruction.png',
     'components/blocks.png',
+    'components/ball.png',
+    'components/megaball.png',
     'powerUp/powerups.png',
     'shadows/block.png',
     'shadows/paddle.png',
     'shadows/bonus.png',
     'shadows/blank.png',
+    'shadows/ball.png'
   ]);
 
   /*await FlameAudio.audioCache.loadAll(<String>[
