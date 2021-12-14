@@ -10,6 +10,7 @@ abstract class Selector extends PositionComponent with Draggable {
 
   final double leftBound;
   final double rightBound;
+  bool lock = false;
 
   Selector(Vector2 pos, Vector2 siz, this.leftBound, this.rightBound, int value) : super (
       position: pos,
@@ -67,15 +68,24 @@ abstract class Selector extends PositionComponent with Draggable {
   void updateVariable(int value);
 
   void keyboardAction(RawKeyEvent event) {
-    if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+
+
+    if (event.logicalKey == LogicalKeyboardKey.arrowRight && !lock && event is RawKeyDownEvent) {
+      lock = true;
       if(position.x != rightBound) {
         position.x += (rightBound - leftBound)/2;
       }
     }
-    else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+    else if (event.logicalKey == LogicalKeyboardKey.arrowLeft && !lock && event is RawKeyDownEvent) {
+      lock = true;
       if(position.x != leftBound) {
         position.x -= (rightBound - leftBound)/2;
       }
+    }
+    print(event);
+    if((event.logicalKey == LogicalKeyboardKey.arrowRight || event.logicalKey == LogicalKeyboardKey.arrowLeft) && event is RawKeyUpEvent) {
+      //print('mao');
+      lock = false;
     }
     calcolaPosizione();
   }

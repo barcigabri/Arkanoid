@@ -25,6 +25,7 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
       position: Vector2(pos.x + game.tileSize.x/5,pos.y),
       size: game.tileSize*4/5,
       anchor:Anchor.center,
+      priority: 2
   ) {
     double moltiplicatore = speed / 353.53846153846155;
     speed = game.playScreenSize.y * moltiplicatore;

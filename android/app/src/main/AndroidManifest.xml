@@ -2,7 +2,8 @@
     package="barcella.gabriele.arkanoid">
     <application
         android:label="arkanoid"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:isGame="true">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -38,4 +39,5 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
 </manifest>

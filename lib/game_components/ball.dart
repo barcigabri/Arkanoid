@@ -28,7 +28,6 @@ class Ball extends SpriteComponent with HasHitboxes, Collidable {
   late double difference;
   double angle;
   late Collidable lastCollision;
-  final Sprite shadow = Sprite(Flame.images.fromCache('shadows/ball.png'));
 
 
 
@@ -45,7 +44,7 @@ class Ball extends SpriteComponent with HasHitboxes, Collidable {
     size: Vector2.all(game.tileSize.x/3),
     anchor: Anchor.center,
     sprite: Sprite(Flame.images.fromCache('components/ball.png')),
-    priority: 2
+    priority: 3
   ) {
 
     speed = 150 + game.selectorDifficulty.difficulty * 50;
@@ -101,11 +100,13 @@ class Ball extends SpriteComponent with HasHitboxes, Collidable {
 
   @override
   void render(Canvas canvas) {
-    canvas.save();
-    shadow.renderRect(canvas, size.toRect().translate(game.pixel * 4, game.pixel * 4), overridePaint: game.opacityPaint);
-    canvas.restore();
     super.render(canvas);
-
+    if (megaBonus) {
+      sprite = Sprite(Flame.images.fromCache('components/megaball.png'));
+    }
+    else {
+      sprite = Sprite(Flame.images.fromCache('components/ball.png'));
+    }
     //canvas.drawCircle(position.toOffset(), size.x/2, a);
 
   }
