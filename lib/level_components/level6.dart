@@ -19,8 +19,8 @@ class Level6 extends Level{
       }
     }
     // blocchi di sinistra
-    for (double y = 13; y > 8; y--) {
-      for (double x = 5; x > y - 10; x--) {
+    for (double y = 9; y < 14; y++) {
+      for (double x = y - 9; x < 6; x++) {
         if(x == 5) {
           addInPosition(x, y, 2);
         }

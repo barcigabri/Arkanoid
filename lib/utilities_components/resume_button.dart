@@ -18,7 +18,6 @@ class ResumeButton extends SpriteComponent with Tappable {
   @override
   bool onTapDown(TapDownInfo info) {
     size = Vector2.all(game.tileSize.x * 2.5);
-    print('mao');
     return true;
   }
 

@@ -1,6 +1,5 @@
 
 import 'dart:math';
-import 'dart:ui';
 import 'package:arkanoid/bonus_type.dart';
 import 'package:arkanoid/game_components/bonus.dart';
 import 'package:arkanoid/game_components/bottom_hole.dart';
@@ -22,6 +21,7 @@ import 'package:arkanoid/level_components/level7.dart';
 import 'package:arkanoid/level_components/level5.dart';
 import 'package:arkanoid/level_components/level6.dart';
 import 'package:arkanoid/game_components/background.dart';
+import 'package:arkanoid/utilities_components/back_button.dart';
 import 'package:arkanoid/utilities_components/endgame_button.dart';
 import 'package:arkanoid/utilities_components/eye_button.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
@@ -48,7 +48,6 @@ import 'package:flame_audio/audio_pool.dart';
 import 'package:flame_audio/flame_audio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:ocarina/ocarina.dart';
 
 class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDraggables, KeyboardEvents {
   View activeView = View.home;
@@ -157,6 +156,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late ResumeButton resumeButton;
   late PauseButton pauseButton;
   late EndgameButton endgameButton;
+  late ReturnButton returnButton;
 
 
   late double pixel; //logical dimension of a pixel
@@ -259,7 +259,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // level = 2;
+    // level = 5;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
@@ -284,6 +284,8 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     resumeButton = ResumeButton(this);
 
     endgameButton = EndgameButton(this);
+
+    returnButton = ReturnButton(this);
 
 
     startHome();
@@ -361,6 +363,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     addAll(eyeChoice);
     playButton = PlayButton(this);
     add(playButton);
+    add(returnButton);
 
     //eyeButtonLeft = EyeButton(this, true);
     //eyeButtonRight = EyeButton(this, false);
@@ -386,6 +389,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     remove(selectorEye);
     removeAll(eyeChoice);
     remove(playButton);
+    remove(returnButton);
 
     // remove(eyeButtonLeft);
     // remove(eyeButtonRight);
@@ -847,10 +851,70 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     startHome();
   }
 
+
+
+  //
+  //
+  //
+  //
+  // CAPIRE SE POSSO FARE QUALCOSA PER IL LAG (Con usb lagga, tastiera bluetooth no)
+  //
+  //
+  //
+  //
+  @override
+  KeyEventResult onKeyEvent(
+      RawKeyEvent event,
+      Set<LogicalKeyboardKey> keysPressed,
+      ) {
+
+    if (event is RawKeyDownEvent && keys.contains(event.logicalKey)) return super.onKeyEvent(event, keysPressed);
+
+    switch (activeView) {
+
+      case View.levelComplete:
+        nextLevelButton.keyboardAction(event);
+        break;
+
+      case View.lost:
+        homeButton.keyboardAction(event);
+        break;
+
+      case View.play:
+        paddle.keyboardAction(event);
+        pauseButton.keyboardAction(event);
+        break;
+
+      case View.selectEye:
+        selectorEye.keyboardAction(event);
+        playButton.keyboardAction(event);
+        returnButton.keyboardAction(event);
+        break;
+
+      case View.gameComplete:
+        homeButton.keyboardAction(event);
+        break;
+
+      case View.home:
+        selectorDifficulty.keyboardAction(event);
+        startButton.keyboardAction(event);
+        break;
+
+      case View.pause:
+        resumeButton.keyboardAction(event);
+        endgameButton.keyboardAction(event);
+        break;
+
+    }
+
+    return super.onKeyEvent(event, keysPressed);
+  }
+
+
   void loadAnimations() {
     final SpriteSheet spriteSheet = SpriteSheet(
-        image: Flame.images.fromCache('powerUp/powerups.png'),
-        srcSize: Vector2(16.0, 8.0),
+      image: Flame.images.fromCache('powerUp/powerups.png'),
+      srcSize: Vector2(16.0, 8.0),
     );
     disruption = spriteSheet.createAnimation(row: 2, stepTime: animationSpeed);
     expansion = spriteSheet.createAnimation(row: 3, stepTime: animationSpeed);
@@ -918,65 +982,6 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
       srcSize: Vector2(208.0, 232.0),
     );
   }
-
-  //
-  //
-  //
-  //
-  // CAPIRE SE POSSO FARE QUALCOSA PER IL LAG (Con usb lagga, tastiera bluetooth no)
-  //
-  //
-  //
-  //
-  @override
-  KeyEventResult onKeyEvent(
-      RawKeyEvent event,
-      Set<LogicalKeyboardKey> keysPressed,
-      ) {
-
-    if (event is RawKeyDownEvent && keys.contains(event.logicalKey)) return super.onKeyEvent(event, keysPressed);
-
-    switch (activeView) {
-
-      case View.levelComplete:
-        nextLevelButton.keyboardAction(event);
-        break;
-
-      case View.lost:
-        homeButton.keyboardAction(event);
-        break;
-
-      case View.play:
-        paddle.keyboardAction(event);
-        pauseButton.keyboardAction(event);
-        break;
-
-      case View.selectEye:
-        selectorEye.keyboardAction(event);
-        playButton.keyboardAction(event);
-        break;
-
-      case View.gameComplete:
-        homeButton.keyboardAction(event);
-        break;
-
-      case View.home:
-        selectorDifficulty.keyboardAction(event);
-        startButton.keyboardAction(event);
-        break;
-
-      case View.pause:
-        resumeButton.keyboardAction(event);
-        endgameButton.keyboardAction(event);
-        break;
-
-    }
-
-    return super.onKeyEvent(event, keysPressed);
-  }
-
-
-
 
 
 

@@ -143,9 +143,6 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
             velocity = Vector2.zero();
           }
         }
-        if(event.logicalKey == LogicalKeyboardKey.gameButtonB || event.logicalKey == LogicalKeyboardKey.gameButtonX) {
-          game.pause();
-        }
       }
 
   }

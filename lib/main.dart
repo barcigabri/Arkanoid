@@ -46,6 +46,7 @@ void main() async {
     'ui/pause.png',
     'ui/play.png',
     'ui/home.png',
+    'ui/back.png',
   ]);
 
   /*await FlameAudio.audioCache.loadAll(<String>[

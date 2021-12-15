@@ -4,14 +4,14 @@ import 'package:flame/flame.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/services.dart';
 
-class PauseButton extends SpriteComponent with Tappable {
+class ReturnButton extends SpriteComponent with Tappable {
   final ArkanoidGame game;
 
-  PauseButton(this.game):super(
-      sprite: Sprite(Flame.images.fromCache('ui/pause.png')),
-      position: Vector2(game.playScreenPosition.x - game.tileSize.x * 3 / 2, game.screen.y / 2),
+  ReturnButton(this.game):super(
+      sprite: Sprite(Flame.images.fromCache('ui/back.png')),
+      position: game.playScreenPosition,
       size: Vector2.all(game.tileSize.x * 2),
-      anchor: Anchor.center,
+      anchor: Anchor.topLeft,
       priority: 7
   );
 
@@ -24,7 +24,8 @@ class PauseButton extends SpriteComponent with Tappable {
   @override
   bool onTapUp(TapUpInfo info) {
     size = Vector2.all(game.tileSize.x * 2);
-    game.pause();
+    game.removeEyeSelection();
+    game.startHome();
     return true;
   }
 
@@ -35,14 +36,17 @@ class PauseButton extends SpriteComponent with Tappable {
   }
 
   void keyboardAction(RawKeyEvent event) {
+
     if(event.logicalKey == LogicalKeyboardKey.gameButtonB || event.logicalKey == LogicalKeyboardKey.gameButtonX) {
       if(event is RawKeyDownEvent) {
         size = Vector2.all(game.tileSize.x * 2.5);
       }
       if(event is RawKeyUpEvent) {
         size = Vector2.all(game.tileSize.x * 2);
-        game.pause();
+        game.removeEyeSelection();
+        game.startHome();
       }
+
     }
   }
 }
