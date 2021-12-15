@@ -37,7 +37,7 @@ class BottomHole extends SpriteComponent with HasHitboxes, Collidable {
     ball.lock = false;
     ball.strongLock = false;
     ball.previousBlock = Vector2.zero();
-    print('Ball fell down');
+    // print('Ball fell down');
     game.balls.remove(ball);
     game.remove(ball);
     if (game.balls.isEmpty) {

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:arkanoid/game_components/ball.dart';
+import 'package:arkanoid/view.dart';
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
@@ -54,7 +55,7 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
     }
     if(ball.freezeBonus && !ball.freeze) {
       ball.freeze = true;
-      ball.movementOnOff(false);
+      ball.movementOnOff(false, true);
       ball.difference = xPaddle-ball.position.x;
       // print(ball.difference);
     }
@@ -124,11 +125,12 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
         }
       }
       if (event is RawKeyUpEvent) {
+
         game.keys.remove(event.logicalKey);
         game.balls.forEach((element) {
           if(element.freeze && (event.logicalKey == LogicalKeyboardKey.gameButtonA || event.logicalKey == LogicalKeyboardKey.keyA)) {
           game.balls.first.freeze = false;
-          game.balls.first.movementOnOff(true);
+          game.balls.first.movementOnOff(true, true);
         }});
 
         if(event.logicalKey == LogicalKeyboardKey.arrowLeft) {
@@ -140,6 +142,9 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
           if(velocity.x > 0) {
             velocity = Vector2.zero();
           }
+        }
+        if(event.logicalKey == LogicalKeyboardKey.gameButtonB || event.logicalKey == LogicalKeyboardKey.gameButtonX) {
+          game.pause();
         }
       }
 

@@ -4,5 +4,6 @@ enum View {
   play,
   levelComplete,
   gameComplete,
-  lost
+  lost,
+  pause
 }

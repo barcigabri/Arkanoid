@@ -42,7 +42,10 @@ void main() async {
     'shadows/paddle.png',
     'shadows/bonus.png',
     'shadows/blank.png',
-    'shadows/ball.png'
+    'shadows/ball.png',
+    'ui/pause.png',
+    'ui/play.png',
+    'ui/home.png',
   ]);
 
   /*await FlameAudio.audioCache.loadAll(<String>[

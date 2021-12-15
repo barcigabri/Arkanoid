@@ -11,8 +11,8 @@ class GestureInvisibleScreen extends PositionComponent with Tappable, comp.Dragg
   final ArkanoidGame game;
 
   GestureInvisibleScreen(this.game) : super (
-      position: Vector2.zero(),
-      size: game.size,
+      position: Vector2(game.playScreenPosition.x, 0),
+      size: game.size - Vector2(game.playScreenPosition.x, 0),
   );
 
   @override

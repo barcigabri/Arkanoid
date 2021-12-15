@@ -28,6 +28,7 @@ class Ball extends SpriteComponent with HasHitboxes, Collidable {
   late double difference;
   double angle;
   late Collidable lastCollision;
+  late Vector2 pausedVelocity = Vector2.zero();
 
 
 
@@ -190,11 +191,18 @@ class Ball extends SpriteComponent with HasHitboxes, Collidable {
     return Vector2(x, -y)..scaleTo(speed);
   }
 
-  void movementOnOff(bool movement) {
+  void movementOnOff(bool movement, bool isOnTap) {
     if(movement) {
-      ballRotation(game.paddle.position.x - difference);
+      if (isOnTap) {
+        ballRotation(game.paddle.position.x - difference);
+      }
+      else {
+        velocity = pausedVelocity;
+        pausedVelocity = Vector2.zero();
+      }
     }
     else {
+      pausedVelocity = velocity;
       velocity = Vector2.zero();
     }
   }
@@ -206,8 +214,8 @@ class Ball extends SpriteComponent with HasHitboxes, Collidable {
     else {
       if (!freeze) game.paddle.xPaddle = info.eventPosition.game.x;
       if (freeze) { // Se la pallina è sul paddle la lancio e inizio il gioco
+        movementOnOff(true,true);
         freeze = false;
-        movementOnOff(true);
       }
     }
   }

@@ -82,7 +82,6 @@ abstract class Selector extends PositionComponent with Draggable {
         position.x -= (rightBound - leftBound)/2;
       }
     }
-    print(event);
     if((event.logicalKey == LogicalKeyboardKey.arrowRight || event.logicalKey == LogicalKeyboardKey.arrowLeft) && event is RawKeyUpEvent) {
       //print('mao');
       lock = false;

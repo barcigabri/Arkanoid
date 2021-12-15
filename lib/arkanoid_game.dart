@@ -22,12 +22,16 @@ import 'package:arkanoid/level_components/level7.dart';
 import 'package:arkanoid/level_components/level5.dart';
 import 'package:arkanoid/level_components/level6.dart';
 import 'package:arkanoid/game_components/background.dart';
+import 'package:arkanoid/utilities_components/endgame_button.dart';
 import 'package:arkanoid/utilities_components/eye_button.dart';
 import 'package:arkanoid/utilities_components/gesture_invisible_screen.dart';
 import 'package:arkanoid/utilities_components/home_button.dart';
 import 'package:arkanoid/utilities_components/next_level_button.dart';
 import 'package:arkanoid/utilities_components/no_penalization_button.dart';
+import 'package:arkanoid/utilities_components/pause_button.dart';
+import 'package:arkanoid/utilities_components/pause_screen.dart';
 import 'package:arkanoid/utilities_components/play_button.dart';
+import 'package:arkanoid/utilities_components/resume_button.dart';
 import 'package:arkanoid/utilities_components/selector_difficulty.dart';
 import 'package:arkanoid/utilities_components/selector_eye.dart';
 import 'package:arkanoid/utilities_components/slider.dart';
@@ -83,6 +87,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late HomeButton homeButton;
   double laserTimer = 0;
   late Laser laser1, laser2;
+  late PauseScreen pauseScreen;
 
   // Animations
   final double animationSpeed = 0.15;
@@ -148,6 +153,10 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   late Background bg;
   late Frame frame;
+
+  late ResumeButton resumeButton;
+  late PauseButton pauseButton;
+  late EndgameButton endgameButton;
 
 
   late double pixel; //logical dimension of a pixel
@@ -267,6 +276,14 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     ];
 
     opacityPaint = Paint()..color = Colors.white.withOpacity(penalizationPercentage);
+
+    pauseScreen = PauseScreen(this);
+
+    pauseButton = PauseButton(this);
+
+    resumeButton = ResumeButton(this);
+
+    endgameButton = EndgameButton(this);
 
 
     startHome();
@@ -440,7 +457,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   }
 
   void waitLasers(double dt) {
-    if(activeType == BonusType.laser) {
+    if(activeType == BonusType.laser && activeView != View.pause) {
       laserTimer += dt;
       if(laserTimer >= 1) {
         laserTimer = 0;
@@ -534,7 +551,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
       }
       if(balls.first.freeze) {
         balls.first.freeze = false; // disattivo il freeze
-        balls.first.movementOnOff(true); // attivo il movimento
+        balls.first.movementOnOff(true, false); // attivo il movimento
       }
     }
   }
@@ -597,15 +614,27 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     }
   }
 
-  void lostGame() {
-    // Lo metto subito per il debug, ma ci sarà una schermata di game over
+  void removeAllComponents() {
     removeBlocks();
     removeComponents();
     remove(gesturesComponent);
     remove(bottomHole);
     remove(bg);
     remove(frame);
+    remove(pauseButton);
+    remove(pauseScreen);
+    remove(pauseButton);
+    remove(resumeButton);
+    remove(endgameButton);
+    livesList.forEach((element) {
+      remove(element);
+    });
     level = 0;
+  }
+
+  void lostGame() {
+    // Lo metto subito per il debug, ma ci sarà una schermata di game over
+    removeAllComponents();
     lostScreen();
     //startHome();
   }
@@ -691,6 +720,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     remove(bottomHole);
     remove(bg);
     remove(frame);
+    remove(pauseButton);
 
 
     if(level < levels.length-1) {
@@ -773,6 +803,48 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     remove(textBox2);
     remove(homeButton);
     playHomeBGM();
+  }
+
+  void pause() {
+    activeView = View.pause;
+    remove(gesturesComponent);
+    balls.forEach((element) {
+      element.movementOnOff(false, false);
+    });
+    bonusList.forEach((element) {
+      element.movementOnOff(false);
+    });
+    paddle.velocity = Vector2.zero();
+    laser1.movementOnOff(false);
+    laser2.movementOnOff(false);
+    add(pauseScreen);
+    remove(pauseButton);
+    add(resumeButton);
+    add(endgameButton);
+  }
+
+
+  void resume() {
+    activeView = View.play;
+    add(gesturesComponent);
+    balls.forEach((element) {
+      element.movementOnOff(true, false);
+    });
+    bonusList.forEach((element) {
+      element.movementOnOff(true);
+    });
+    laser1.movementOnOff(true);
+    laser2.movementOnOff(true);
+    remove(pauseScreen);
+    remove(resumeButton);
+    remove(endgameButton);
+    add(pauseButton);
+  }
+
+  void endgame() {
+    activeView = View.home;
+    removeAllComponents();
+    startHome();
   }
 
   void loadAnimations() {
@@ -876,6 +948,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
       case View.play:
         paddle.keyboardAction(event);
+        pauseButton.keyboardAction(event);
         break;
 
       case View.selectEye:
@@ -890,6 +963,11 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
       case View.home:
         selectorDifficulty.keyboardAction(event);
         startButton.keyboardAction(event);
+        break;
+
+      case View.pause:
+        resumeButton.keyboardAction(event);
+        endgameButton.keyboardAction(event);
         break;
 
     }
@@ -930,6 +1008,10 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     );
     return painter;
   }
+
+
+
+
 
 }
 

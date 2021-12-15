@@ -19,6 +19,7 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
   late Vector2 velocity;
   late BonusType type;
   final Sprite shadow = Sprite(Flame.images.fromCache('shadows/bonus.png'));
+  late Vector2 pausedVelocity = Vector2.zero();
 
 
   Bonus(this.game, Vector2 pos) : super (
@@ -54,7 +55,7 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
 
   @override
   void onCollision(Set<Vector2> points, Collidable other) {
-    //capire perchè non aggiunge più
+    // Capire perchè non aggiunge più
     if (other is Paddle) {
       game.bonusOnScreen.remove(type);
       game.remove(this);
@@ -112,6 +113,16 @@ class Bonus extends SpriteAnimationComponent with HasHitboxes, Collidable {
   void update (double dt){
     super.update(dt);
     position.add(velocity * dt);
+  }
+
+  void movementOnOff(bool movement) {
+    if(movement) {
+      velocity = pausedVelocity;
+    }
+    else {
+      pausedVelocity = velocity;
+      velocity = Vector2.zero();
+    }
   }
 
   void assignSprite() {

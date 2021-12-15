@@ -17,6 +17,7 @@ class Laser extends SpriteComponent with HasHitboxes, Collidable {
   late HitboxRectangle shape;
   late Vector2 velocity;
   bool isLeft;
+  late Vector2 pausedVelocity = Vector2.zero();
 
 
   Laser(this.game,this.isLeft) : super (
@@ -72,6 +73,16 @@ class Laser extends SpriteComponent with HasHitboxes, Collidable {
   void update (double dt){
     super.update(dt);
     position.add(velocity * dt);
+  }
+
+  void movementOnOff(bool movement) {
+    if(movement) {
+      velocity = pausedVelocity;
+    }
+    else {
+      pausedVelocity = velocity;
+      velocity = Vector2.zero();
+    }
   }
 
 

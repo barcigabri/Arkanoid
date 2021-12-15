@@ -2,6 +2,7 @@ import 'package:arkanoid/arkanoid_game.dart';
 import 'package:arkanoid/game_components/ball.dart';
 import 'package:arkanoid/game_components/block.dart';
 import 'package:arkanoid/game_components/background.dart';
+import 'package:arkanoid/game_components/laser.dart';
 import 'package:flame/game.dart';
 
 abstract class Level {
@@ -36,6 +37,9 @@ abstract class Level {
     generateLevelPositions();
     addBlocks();
     game.add(game.frame);
+    game.add(game.pauseButton);
+    game.laser1 = Laser(game, true);
+    game.laser2 = Laser(game, true);
   }
 
 

@@ -68,6 +68,7 @@ flutter:
     - assets/images/powerUp/
     - assets/images/components/
     - assets/images/shadows/
+    - assets/images/ui/
     - assets/audio/sfx/
     - assets/audio/bgm/
 
