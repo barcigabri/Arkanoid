@@ -601,6 +601,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   }
   void lostLife() {
     removeBonuses();
+    resume();
     lives--;
 
     if (livesList.isEmpty) {

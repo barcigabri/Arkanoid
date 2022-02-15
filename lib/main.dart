@@ -61,7 +61,6 @@ void main() async {
 
   ArkanoidGame game = ArkanoidGame();
 
-  //sleep(Duration(seconds: 2));
   runApp(
       GameWidget(
         game: game,

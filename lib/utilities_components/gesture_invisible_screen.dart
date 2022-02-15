@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:arkanoid/view.dart';
 import 'package:flame/components.dart';
 import 'package:flame/components.dart' as comp;
 import 'package:flame/input.dart';
@@ -17,20 +18,25 @@ class GestureInvisibleScreen extends PositionComponent with Tappable, comp.Dragg
 
   @override
   bool onTapUp(TapUpInfo info) {
-    game.balls.first.onTapUp(info);
+    if(game.activeView != View.pause) {
+      game.balls.first.onTapUp(info);
+    }
     return true;
   }
 
   @override
   bool onDragUpdate(int pointerId, DragUpdateInfo info) {
-    game.paddle.xPaddle = info.eventPosition.game.x;
-    if(game.paddle.xPaddle > game.screen.x-game.screen.x/6-game.paddle.size.x/2) {
-      game.paddle.xPaddle = game.screen.x-game.screen.x/6-game.paddle.size.x/2;
+    if(game.activeView != View.pause) {
+      game.paddle.xPaddle = info.eventPosition.game.x;
+      if (game.paddle.xPaddle >
+          game.screen.x - game.screen.x / 6 - game.paddle.size.x / 2) {
+        game.paddle.xPaddle =
+            game.screen.x - game.screen.x / 6 - game.paddle.size.x / 2;
+      }
+      if (game.paddle.xPaddle < game.screen.x / 6 + game.paddle.size.x / 2) {
+        game.paddle.xPaddle = game.screen.x / 6 + game.paddle.size.x / 2;
+      }
     }
-    if(game.paddle.xPaddle < game.screen.x/6+game.paddle.size.x/2) {
-      game.paddle.xPaddle = game.screen.x/6+game.paddle.size.x/2;
-    }
-
 
     return true;
   }
