@@ -36,7 +36,6 @@ import 'package:arkanoid/utilities_components/selector_difficulty.dart';
 import 'package:arkanoid/utilities_components/selector_eye.dart';
 import 'package:arkanoid/utilities_components/slider.dart';
 import 'package:arkanoid/utilities_components/start_button.dart';
-import 'package:arkanoid/utilities_components/vr.dart';
 import 'package:arkanoid/view.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flame/components.dart';
@@ -53,7 +52,9 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   View activeView = View.home;
   late Vector2 screen;
   bool init = false;
-  late Vr vrLeft, vrRight;
+
+  late SpriteComponent vrSprite;
+
   late List<Ball> balls;
   late Paddle paddle;
   late LateralPaddle lpl,lpr;
@@ -196,8 +197,13 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     wallRight = Wall(this,Vector2(screen.x-screen.x/6, 0),Vector2(screen.x/6,screen.y));
     add(wallRight);
     bottomHole = BottomHole(this);
-    vrLeft = Vr(this,1);
-    vrRight = Vr(this,2);
+
+    vrSprite = SpriteComponent.fromImage(
+        Flame.images.fromCache('vr/cardboardview.png'),
+        size: screen,
+        priority: 100);
+    add(vrSprite);
+
     frame = Frame(this);
 
     linePosition = Vector2(screen.x / 2 - playScreenSize.x * 3 / 8, screen.y / 2 + tileSize.y * 2);
@@ -421,44 +427,44 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   @override
   void render(Canvas canvas) {
+    if(penalizedEyeIsSet) {
+      if (penalizedEyeIsLeft) {
+        paddle.setOpacity(0.5);
+      }
+    }
     super.render(canvas);
     if(penalizedEyeIsSet) {
+        paddle.setOpacity(1);
+    }
+    /*if(penalizedEyeIsSet) {
       if (penalizedEyeIsLeft) {
         canvas.save();
         penalizationScreen.renderRect(canvas, Rect.fromLTWH(playScreenPosition.x,playScreenPosition.y,playScreenSize.x,playScreenSize.y), overridePaint: opacityPaint);
         canvas.restore();
       }
-    }
-    renderBothScreens(canvas, 1);
+    }*/
+
     canvas.translate(screen.x,0); //render alla metà destra
+
+    if(penalizedEyeIsSet) {
+      if (!penalizedEyeIsLeft) {
+        paddle.setOpacity(0.5);
+      }
+    }
     super.render(canvas);
     if(penalizedEyeIsSet) {
+      paddle.setOpacity(1);
+    }
+    /*if(penalizedEyeIsSet) {
       if (!penalizedEyeIsLeft) {
         canvas.save();
         penalizationScreen.renderRect(canvas, Rect.fromLTWH(playScreenPosition.x,playScreenPosition.y,playScreenSize.x,playScreenSize.y), overridePaint: opacityPaint);
         canvas.restore();
       }
-    }    renderBothScreens(canvas, 2);
-    canvas.drawLine(Offset(0,0), Offset(0,screen.y), a);
-
+    }*/
   }
 
-  // Il canvas è adattato su metà schermo, il side è per sapere su quale lato sto operando (utile anche per la penalizzazione)
-  void renderBothScreens(Canvas canvas, int side) { //renderizza considerando metà schermo
 
-    // painter.paint(canvas, position);
-
-    //canvas.drawLine(Offset(0,0), Offset(417.8181818181818,392.72727272727275), a);
-
-    //Per ultimo così è sopra a tutto il resto
-    if(side == 1) { // L'if è necessario altrimenti la maschera vr non sarebbe simmetrica
-      vrLeft.render(canvas); // render VR mask
-    }
-    else {
-      vrRight.render(canvas); // render VR mask
-    }
-
-  }
 
   void waitLasers(double dt) {
     if(activeType == BonusType.laser && activeView != View.pause) {
@@ -601,13 +607,15 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   }
   void lostLife() {
     removeBonuses();
-    resume();
     lives--;
 
     if (livesList.isEmpty) {
       lostGame();
     }
     else {
+      if(activeView == View.pause) {
+        resume();
+      }
       createPaddle();
       gesturesComponent = GestureInvisibleScreen(this);
       add(gesturesComponent);

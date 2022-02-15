@@ -1,7 +1,7 @@
 import 'dart:ui';
 import 'package:arkanoid/game_components/ball.dart';
-import 'package:arkanoid/view.dart';
 import 'package:flame/components.dart';
+import 'package:flame/effects.dart';
 import 'package:flame/flame.dart';
 import 'package:flame/geometry.dart';
 import 'package:flame/sprite.dart';
@@ -26,7 +26,8 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
       size: Vector2(game.tileSize.x*2,1),
       anchor: Anchor.topCenter,
       animation: game.paddleSheetCreate.createAnimation(row: 0, loop: false, stepTime: game.animationSpeed),
-      priority: 4
+      priority: 4,
+      paint: Paint()..color = Colors.white
   ) {
     collidableType = CollidableType.passive;
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
@@ -44,6 +45,8 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
 
     xPaddle = game.screen.x/2;
     opacity = game.opacityPaint;
+
+
   }
 
   void ballCollision(Ball ball, Set<Vector2> points) {
