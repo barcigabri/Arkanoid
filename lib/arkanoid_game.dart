@@ -80,13 +80,17 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late NextLevelButton nextLevelButton;
   late Level currentLevel;
   late EyeButton eyeButtonLeft, eyeButtonRight;
-  late Sprite penalizationScreen;
+
+  //late Sprite penalizationScreen;
   late bool penalizedEyeIsLeft;
   late bool penalizedEyeIsSet = false;
+
   late NoPenalizationButton noPenalizationButton;
   late HomeButton homeButton;
+
   double laserTimer = 0;
   late Laser laser1, laser2;
+
   late PauseScreen pauseScreen;
 
   // Animations
@@ -113,7 +117,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late final SpriteAnimation paddleExtendedAnimation;
 
 
-  double penalizationPercentage = 0.5;
+  double penalPerc = 0.5;
   late Paint opacityPaint;
 
   late Offset position;
@@ -262,13 +266,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     selectorEye = SelectorEye(this, selectorPosition + Vector2(lineSize.x / 2, 0), selectorSize, selectorPosition.x, selectorPosition.x + lineSize.x, 2);
 
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // level = 5;
-    // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
+    // level = 3;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
 
     levels = [
@@ -281,7 +279,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
       Level7(this)
     ];
 
-    opacityPaint = Paint()..color = Colors.white.withOpacity(penalizationPercentage);
+    opacityPaint = Paint()..color = Colors.white.withOpacity(penalPerc);
 
     pauseScreen = PauseScreen(this);
 
@@ -382,7 +380,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   void addPenalization(isLeft) {
     removeEyeSelection();
-    penalizationScreen = Sprite(Flame.images.fromCache('background/penalization.png'));
+    // penalizationScreen = Sprite(Flame.images.fromCache('background/penalization.png'));
     penalizedEyeIsLeft = isLeft;
     penalizedEyeIsSet = true;
     startGame();
@@ -429,12 +427,12 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   void render(Canvas canvas) {
     if(penalizedEyeIsSet) {
       if (penalizedEyeIsLeft) {
-        paddle.setOpacity(0.5);
+        addPenal();
       }
     }
     super.render(canvas);
     if(penalizedEyeIsSet) {
-        paddle.setOpacity(1);
+      resetPenal();
     }
     /*if(penalizedEyeIsSet) {
       if (penalizedEyeIsLeft) {
@@ -448,12 +446,12 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
     if(penalizedEyeIsSet) {
       if (!penalizedEyeIsLeft) {
-        paddle.setOpacity(0.5);
+        addPenal();
       }
     }
     super.render(canvas);
     if(penalizedEyeIsSet) {
-      paddle.setOpacity(1);
+      resetPenal();
     }
     /*if(penalizedEyeIsSet) {
       if (!penalizedEyeIsLeft) {
@@ -464,7 +462,27 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     }*/
   }
 
+  void addPenal() {
+    paddle.setOpacity(penalPerc);
+    blocks.forEach((element) {
+      element.setOpacity(penalPerc);
+    });
+    bonusList.forEach((element) {
+      element.setOpacity(penalPerc);
+    });
+    opacityPaint.color = opacityPaint.color.withOpacity(penalPerc/2);
+  }
 
+  void resetPenal() {
+    paddle.setOpacity(1);
+    blocks.forEach((element) {
+      element.setOpacity(1);
+    });
+    bonusList.forEach((element) {
+      element.setOpacity(1);
+    });
+    opacityPaint.color = opacityPaint.color.withOpacity(penalPerc);
+  }
 
   void waitLasers(double dt) {
     if(activeType == BonusType.laser && activeView != View.pause) {

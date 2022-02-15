@@ -22,7 +22,8 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
   Block(this.game, Vector2 pos, this.idPosizione, this.lives) : super (
       position: pos,
       size: game.tileSize, /*-Vector2.all(1)*/ // VALUTARE SE TENERE O MENO, PER ORA TENENDO TRAPASSO I BLOCCHI, MEGLIO DI NO
-      priority: 1
+      priority: 1,
+      paint: Paint()..color = Colors.white
   ) {
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
     collidableType = CollidableType.passive;
@@ -187,6 +188,7 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
   }
 
   void removeBlock() {
+    setOpacity(0);
     game.blocks.remove(this);
     game.remove(this);
   }
