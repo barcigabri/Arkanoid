@@ -3,7 +3,7 @@ import 'package:arkanoid/level_components/level.dart';
 
 class Level7 extends Level{
 
-  Level7(ArkanoidGame game):super(game, 1);
+  Level7(ArkanoidGame game):super(game, 6);
 
   @override
   void generateLevelPositions() {
@@ -17,12 +17,12 @@ class Level7 extends Level{
         }
       }
       */
-      if(y % 4 == 3) {
+      if(y != 5 && y != 13) {
         for (double x = 0; x < 13; x++){
           addInPosition(x, y, 1);
         }
       }
-      if(y % 8 == 5) {
+      if(y == 5) {
         for (double x = 0; x < 13; x++){
           if(x < 3) {
             addInPosition(x, y, 1);
@@ -32,7 +32,7 @@ class Level7 extends Level{
           }
         }
       }
-      if(y % 8 == 1) {
+      if(y == 13) {
         for (double x = 0; x < 13; x++){
           if(x > 9) {
             addInPosition(x, y, 1);

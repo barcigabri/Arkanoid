@@ -16,8 +16,9 @@ class Life extends SpriteComponent {
   /*Rect vrRect2 = Rect.zero;*/
   Life(this.game, this.lifeNumber) : super(
     position: Vector2(game.playScreenPosition.x+game.tileSize.x/2+game.tileSize.x/2*lifeNumber, game.playScreenPosition.y+game.playScreenSize.y-game.tileSize.y),
-    size: Vector2.all(game.tileSize.y*4/5),
-    sprite: Sprite(Flame.images.fromCache('components/life.png'))
+    size: Vector2.all(game.tileSize.y*5/6),
+    sprite: Sprite(Flame.images.fromCache('components/life.png')),
+    priority: 10
   ) {
 
 

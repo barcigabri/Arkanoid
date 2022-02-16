@@ -15,11 +15,11 @@ import 'package:arkanoid/game_components/block.dart' as b;
 import 'package:arkanoid/level_components/level.dart';
 import 'package:arkanoid/level_components/level1.dart';
 import 'package:arkanoid/level_components/level2.dart';
-import 'package:arkanoid/level_components/level4.dart';
 import 'package:arkanoid/level_components/level3.dart';
-import 'package:arkanoid/level_components/level7.dart';
-import 'package:arkanoid/level_components/level5.dart';
 import 'package:arkanoid/level_components/level6.dart';
+import 'package:arkanoid/level_components/level7.dart';
+import 'package:arkanoid/level_components/level4.dart';
+import 'package:arkanoid/level_components/level5.dart';
 import 'package:arkanoid/game_components/background.dart';
 import 'package:arkanoid/utilities_components/back_button.dart';
 import 'package:arkanoid/utilities_components/endgame_button.dart';
@@ -81,7 +81,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late Level currentLevel;
   late EyeButton eyeButtonLeft, eyeButtonRight;
 
-  //late Sprite penalizationScreen;
+  late Sprite penalizationScreen;
   late bool penalizedEyeIsLeft;
   late bool penalizedEyeIsSet = false;
 
@@ -117,7 +117,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   late final SpriteAnimation paddleExtendedAnimation;
 
 
-  double penalPerc = 0.5;
+  final double penalPerc = 0.5;
   late Paint opacityPaint;
 
   late Offset position;
@@ -266,7 +266,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     selectorEye = SelectorEye(this, selectorPosition + Vector2(lineSize.x / 2, 0), selectorSize, selectorPosition.x, selectorPosition.x + lineSize.x, 2);
 
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // level = 3;
+    // level = 4;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
 
     levels = [
@@ -380,7 +380,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   void addPenalization(isLeft) {
     removeEyeSelection();
-    // penalizationScreen = Sprite(Flame.images.fromCache('background/penalization.png'));
+    penalizationScreen = Sprite(Flame.images.fromCache('background/penalization.png'));
     penalizedEyeIsLeft = isLeft;
     penalizedEyeIsSet = true;
     startGame();
@@ -463,14 +463,18 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
   }
 
   void addPenal() {
-    paddle.setOpacity(penalPerc);
+    double perc = penalPerc-level*0.1;
+    if(perc < 0.3) {
+      perc = 0.3;
+    }
+    paddle.setOpacity(perc);
     blocks.forEach((element) {
-      element.setOpacity(penalPerc);
+      element.setOpacity(perc);
     });
     bonusList.forEach((element) {
-      element.setOpacity(penalPerc);
+      element.setOpacity(perc);
     });
-    opacityPaint.color = opacityPaint.color.withOpacity(penalPerc/2);
+    opacityPaint.color = opacityPaint.color.withOpacity(perc/2);
   }
 
   void resetPenal() {
