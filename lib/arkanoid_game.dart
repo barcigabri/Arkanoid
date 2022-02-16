@@ -266,7 +266,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     selectorEye = SelectorEye(this, selectorPosition + Vector2(lineSize.x / 2, 0), selectorSize, selectorPosition.x, selectorPosition.x + lineSize.x, 2);
 
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
-    // level = 4;
+    // level = 1;
     // DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG DEBUG
 
     levels = [
@@ -305,11 +305,11 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     playHomeBGM();
     penalizedEyeIsSet = false;
     logo = TextComponent(
-        text: "ARKANOID",
+        text: "ARKANOID VR",
       position: Vector2(screen.x/2,screen.y/4),
       //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
       anchor: Anchor.center,
-      textRenderer: getPainter(30));
+      textRenderer: getPainter(24));
     add(logo);
     textBox1 = TextComponent(
         text: "SELECT DIFFICULTY",
