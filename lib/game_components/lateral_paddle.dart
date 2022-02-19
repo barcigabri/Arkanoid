@@ -47,21 +47,21 @@ class LateralPaddle extends PositionComponent with HasHitboxes, Collidable {
   }
 
   void render(Canvas canvas) {
-    Paint boxPaint = Paint();
-    //boxPaint.color = Color(0xFFFF0000);
+    // Paint boxPaint = Paint();
+    // boxPaint.color = Color(0xFF00FF00);
     /*canvas.drawLine(Offset(0,0), Offset(game.screen.x,game.screen.y), boxPaint);*/
     //debugColor = Colors.white;
     super.render(canvas);
-    //renderHitboxes(canvas, paint:boxPaint);
-    //canvas.drawRect(wallRect, boxPaint);
+    // renderHitboxes(canvas, paint:boxPaint);
+    // canvas.drawRect(wallRect, boxPaint);
 
-    //print(wallRect);
-    //bgSprite.renderRect(c, bgRect); // stampa sfondo immagine
+    // print(wallRect);
+    // bgSprite.renderRect(c, bgRect); // stampa sfondo immagine
 
-    //canvas.drawRect(Rect.fromLTWH(348.2, 0.0, game.screen.x/6, game.screen.y),boxPaint);
-    //print(Rect.fromLTWH(348.2, 0.0, game.screen.x/6, game.screen.y));
-    //print('348.2:${p.x} 0.0:${p.y} ${game.screen.x/6}:${s.x} ${game.screen.y}:${s.y}');
-    //Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y)
+    // canvas.drawRect(Rect.fromLTWH(348.2, 0.0, game.screen.x/6, game.screen.y),boxPaint);
+    // print(Rect.fromLTWH(348.2, 0.0, game.screen.x/6, game.screen.y));
+    // print('348.2:${p.x} 0.0:${p.y} ${game.screen.x/6}:${s.x} ${game.screen.y}:${s.y}');
+    // Rect.fromLTRB(p.x, p.y, game.size.x-s.x-p.x, game.size.y-s.y-p.y)
   }
 
   void update(double t) {

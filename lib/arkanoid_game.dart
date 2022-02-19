@@ -425,47 +425,34 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
 
   @override
   void render(Canvas canvas) {
-    if(penalizedEyeIsSet) {
-      if (penalizedEyeIsLeft) {
+    if(penalizedEyeIsSet) { // Controllo dell'inizializzazione dell'occhio penalizzato
+      if (penalizedEyeIsLeft) { // Controllo se l'occhio penalizzato è il sinistro
         addPenal();
       }
     }
-    super.render(canvas);
+    super.render(canvas); // Funzione di render
     if(penalizedEyeIsSet) {
-      resetPenal();
+      resetPenal(); // Ripristino dell'opacità al 100%
     }
-    /*if(penalizedEyeIsSet) {
-      if (penalizedEyeIsLeft) {
-        canvas.save();
-        penalizationScreen.renderRect(canvas, Rect.fromLTWH(playScreenPosition.x,playScreenPosition.y,playScreenSize.x,playScreenSize.y), overridePaint: opacityPaint);
-        canvas.restore();
-      }
-    }*/
 
-    canvas.translate(screen.x,0); //render alla metà destra
+    canvas.translate(screen.x,0); // Traslazione canvas per l'occhio destro
 
-    if(penalizedEyeIsSet) {
-      if (!penalizedEyeIsLeft) {
+    if(penalizedEyeIsSet) { // Controllo dell'inizializzazione dell'occhio penalizzato
+      if (!penalizedEyeIsLeft) { // Controllo se l'occhio penalizzato è il destro
         addPenal();
       }
     }
-    super.render(canvas);
+    super.render(canvas); // Funzione di render
     if(penalizedEyeIsSet) {
-      resetPenal();
+      resetPenal(); // Ripristino dell'opacità al 100%
     }
-    /*if(penalizedEyeIsSet) {
-      if (!penalizedEyeIsLeft) {
-        canvas.save();
-        penalizationScreen.renderRect(canvas, Rect.fromLTWH(playScreenPosition.x,playScreenPosition.y,playScreenSize.x,playScreenSize.y), overridePaint: opacityPaint);
-        canvas.restore();
-      }
-    }*/
   }
 
   void addPenal() {
-    double perc = penalPerc-level*0.1;
-    if(perc < 0.3) {
-      perc = 0.3;
+    // Comincia dal 60% e cala del 10% ogni livello, fino ad arrivare al 20%
+    double perc = penalPerc-(level-1)*0.1;
+    if(perc < 0.2) {
+      perc = 0.2;
     }
     paddle.setOpacity(perc);
     blocks.forEach((element) {
@@ -953,7 +940,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     mega = spriteSheet.createAnimation(row: 5, stepTime: animationSpeed);
     lasers = spriteSheet.createAnimation(row: 4, stepTime: animationSpeed);
     freeze = spriteSheet.createAnimation(row: 1, stepTime: animationSpeed);
-    player = spriteSheet.createAnimation(row: 6, stepTime: animationSpeed);
+    player = spriteSheet.createAnimation(row: 7, stepTime: animationSpeed);
 
     paddleSheetCreate = SpriteSheet(
       image: Flame.images.fromCache('components/paddle_create.png'),
@@ -1044,10 +1031,6 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     );
     return painter;
   }
-
-
-
-
 
 }
 

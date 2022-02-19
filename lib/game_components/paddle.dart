@@ -14,7 +14,7 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
   final ArkanoidGame game;
   late Sprite bgSprite;
   late Rect wallRect;
-  late HitboxRectangle shape;
+  late HitboxShape shape;
   late double xPaddle;
   Vector2 velocity = Vector2.zero();
   double speed = 200;
@@ -33,7 +33,10 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
     //bgSprite = Sprite(Flame.images.fromCache('immagine che non ho ancora'));
 
     // aggiungo le hitbox
-    shape = HitboxRectangle();
+    shape = HitboxPolygon([
+      Vector2(-1, -1),
+      Vector2(1, -1)
+    ]);
     addHitbox(shape);
     size.y = size.x / 4; // sistemare dimensioni!! ( UPDATE: Credo di aver fatto)
 
@@ -78,9 +81,11 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
   @override
   void render(Canvas canvas) {
     canvas.save();
+
     shadow.renderRect(canvas, size.toRect().translate(game.pixel * 4, game.pixel * 4), overridePaint: opacity);
     canvas.restore();
     super.render(canvas);
+    // shape.render(canvas,debugPaint);
   }
 
   @override
