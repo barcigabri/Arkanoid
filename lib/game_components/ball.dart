@@ -21,7 +21,7 @@ class Ball extends SpriteComponent with HasHitboxes, Collidable {
   late double speed;
   bool lock = false;
   bool strongLock = false;
-  Vector2 previousBlock  = Vector2.zero();
+  Vector2 previousBlock  = Vector2.all(-1);
   bool freeze; // blocco sul paddle
   bool freezeBonus = false; // se attivo freeze al contatto con il paddle
   bool megaBonus = false; // se la pallina attraversa i blocchi

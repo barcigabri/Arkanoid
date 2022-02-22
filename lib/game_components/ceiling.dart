@@ -40,7 +40,7 @@ class Ceiling extends PositionComponent with HasHitboxes, Collidable {
       ball.velocity.y = ball.velocity.y.abs();
       ball.position.y+=2;
     }
-    ball.previousBlock = Vector2.zero();
+    ball.previousBlock = Vector2.all(-1);
   }
 
   void render(Canvas canvas) {

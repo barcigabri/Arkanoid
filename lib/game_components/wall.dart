@@ -38,7 +38,7 @@ class Wall extends PositionComponent with HasHitboxes, Collidable {
 
   void ballCollision(Ball ball, Set<Vector2> points) {
     ball.lock = false;
-    ball.previousBlock = Vector2.zero();
+    ball.previousBlock = Vector2.all(-1);
     if(!ball.freeze) {
       /*if (ball.velocity.x > 0) {
         ball.position.x -= 2;
