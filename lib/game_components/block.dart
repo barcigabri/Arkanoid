@@ -94,8 +94,6 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
         bool hasAdjacentVbottom = false;
         bool hasAdjacentVleft = false;
         bool hasAdjacentVright = false;
-
-
         game.blocks.forEach((block) {
           // print(num.parse((block.position.y + block.size.y).toStringAsFixed(2)));
           // print(num.parse(points.last.y.toStringAsFixed(2)));
@@ -140,7 +138,14 @@ class Block extends SpriteAnimationComponent with HasHitboxes, Collidable {
         });
 
         // in tutti gli if i controlli sono doppi così controllo tutti i punti di contatto,
-        // sia del blocco che della pallina
+        // sia del blocco che della pallina.
+        // Vengono controllati diversi parametri per rendere il rimbalzo il più coerente
+        // possibile, i parametri sono:
+        // • Appartiene a una parete (variabili hasAdjacent...)
+        // • Riconoscimento lati di collisioni del blocco
+        // • Valutazione traiettoria d'origine della pallina (dall'alto o dal basso)
+        // Grazie a questi parametri si può valutare se il rimbalzo è meglio in
+        // verticale o in orizzontale
         if (((num.parse((position.y + game.tileSize.y).toStringAsFixed(2)) ==
             num.parse(points.last.y.toStringAsFixed(2)) ||
             num.parse((position.y + game.tileSize.y).toStringAsFixed(2)) ==
