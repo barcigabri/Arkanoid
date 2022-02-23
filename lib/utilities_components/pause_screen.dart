@@ -1,7 +1,9 @@
+import 'dart:ui';
 
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
 import 'package:arkanoid/arkanoid_game.dart';
+import 'package:flutter/material.dart';
 
 class PauseScreen extends SpriteComponent {
   final ArkanoidGame game;
@@ -11,7 +13,7 @@ class PauseScreen extends SpriteComponent {
       position: Vector2.zero(),
       size: game.screen,
       sprite: Sprite(Flame.images.fromCache('background/penalization.png')),
-      paint: game.opacityPaint,
+      paint: Paint()..color = Colors.white.withOpacity(0.5),
       priority: 11
   ) {
 

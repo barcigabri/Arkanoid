@@ -279,7 +279,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
       Level7(this)
     ];
 
-    opacityPaint = Paint()..color = Colors.white.withOpacity(0.5);
+    opacityPaint = Paint()..color = Colors.white.withOpacity(penalPerc);
 
     pauseScreen = PauseScreen(this);
 
