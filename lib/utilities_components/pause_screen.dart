@@ -1,12 +1,7 @@
-import 'dart:ui';
-import 'package:arkanoid/game_components/ball.dart';
+
 import 'package:flame/components.dart';
 import 'package:flame/flame.dart';
-import 'package:flame/geometry.dart';
-import 'package:flame/sprite.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:arkanoid/arkanoid_game.dart';
-import 'package:flutter/material.dart';
 
 class PauseScreen extends SpriteComponent {
   final ArkanoidGame game;
@@ -17,7 +12,7 @@ class PauseScreen extends SpriteComponent {
       size: game.screen,
       sprite: Sprite(Flame.images.fromCache('background/penalization.png')),
       paint: game.opacityPaint,
-      priority: 6
+      priority: 11
   ) {
 
 

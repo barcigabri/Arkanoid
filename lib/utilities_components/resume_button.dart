@@ -12,7 +12,7 @@ class ResumeButton extends SpriteComponent with Tappable {
       position: Vector2(game.playScreenPosition.x - game.tileSize.x * 3 / 2, game.screen.y / 2),
       size: Vector2.all(game.tileSize.x * 2),
       anchor: Anchor.center,
-      priority: 7
+      priority: 12
   );
 
   @override

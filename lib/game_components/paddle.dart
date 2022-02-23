@@ -53,6 +53,7 @@ class Paddle extends SpriteAnimationComponent with HasHitboxes, Collidable {
   }
 
   void ballCollision(Ball ball, Set<Vector2> points) {
+    // blocchi che impediscono le collisioni multiple
     if (!ball.lock && !ball.strongLock && !ball.freeze) {
       ball.lock = true;
       ball.previousBlock = Vector2.all(-1);

@@ -279,7 +279,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
       Level7(this)
     ];
 
-    opacityPaint = Paint()..color = Colors.white.withOpacity(penalPerc);
+    opacityPaint = Paint()..color = Colors.white.withOpacity(0.5);
 
     pauseScreen = PauseScreen(this);
 
@@ -324,6 +324,13 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     addAll(difficulties);
     startButton = StartButton(this);
     add(startButton);
+    textBox2 =TextComponent(
+        text: "COMMANDS\n\nB - ACCEPT AND LAUNCH THE BALL\n\nC AND D - GO BACK, PAUSE AND RESUME\n\nA - STOP THE GAME AND GO TO THE\n\nMAIN SCREEN WHILE PAUSE IS ACTIVE",
+        position: Vector2(screen.x/2, screen.y*3/4 + tileSize.y*3/2),
+        //size: Vector2(game.playScreenSize.x*4/5,game.playScreenSize.x*4/5*45/8),
+        anchor: Anchor.topCenter,
+        textRenderer: getPainter(7));
+    add(textBox2);
   }
 
   //
@@ -337,6 +344,7 @@ class ArkanoidGame extends FlameGame with HasCollidables, HasTappables, HasDragg
     remove(selectorDifficulty);
     removeAll(difficulties);
     remove(startButton);
+    remove(textBox2);
   }
 
   void selectEye() {
